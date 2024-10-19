@@ -1,0 +1,10 @@
+@startuml
+title Hello World
+
+boundary Browser
+participant "HelloWorld Controller" as HelloWorldController
+
+Browser -> HelloWorldController : GET /v1/hello-world
+HelloWorldController -> Browser : Ok
+
+@enduml

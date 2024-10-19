@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3B418895-8F67-4480-A4CF-918C3F2C50B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{805E932B-CB77-4B5C-9738-8F7AAE1FA6D5}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		NuGet.Config = NuGet.Config
+		README.md = README.md
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8CB8A1AA-F93C-468E-A3DE-E7E7280F2CCA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{6F628132-BEFD-4B89-A795-F513C84665D5}"
+	ProjectSection(SolutionItems) = preProject
+		docker\docker-compose.dcproj = docker\docker-compose.dcproj
+		docker\docker-compose.override.yml = docker\docker-compose.override.yml
+		docker\docker-compose.yml = docker\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.Infrastructure", "src\KosHome.Infrastructure\KosHome.Infrastructure.csproj", "{E5C64198-F8FB-46A9-AB22-1E62A378DD62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.Application", "src\KosHome.Application\KosHome.Application.csproj", "{D39D90B1-FEBD-4D2B-B35C-F02642781956}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.WebApi", "src\KosHome.WebApi\KosHome.WebApi.csproj", "{6CD3967C-9C38-43C8-9A4A-F74D654009FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.Domain", "src\KosHome.Domain\KosHome.Domain.csproj", "{0710B0B2-F54B-43B0-AFBB-9B71D5C9B800}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E5C64198-F8FB-46A9-AB22-1E62A378DD62} = {3B418895-8F67-4480-A4CF-918C3F2C50B6}
+		{D39D90B1-FEBD-4D2B-B35C-F02642781956} = {3B418895-8F67-4480-A4CF-918C3F2C50B6}
+		{6CD3967C-9C38-43C8-9A4A-F74D654009FD} = {3B418895-8F67-4480-A4CF-918C3F2C50B6}
+		{0710B0B2-F54B-43B0-AFBB-9B71D5C9B800} = {3B418895-8F67-4480-A4CF-918C3F2C50B6}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5C64198-F8FB-46A9-AB22-1E62A378DD62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5C64198-F8FB-46A9-AB22-1E62A378DD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5C64198-F8FB-46A9-AB22-1E62A378DD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5C64198-F8FB-46A9-AB22-1E62A378DD62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D39D90B1-FEBD-4D2B-B35C-F02642781956}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D39D90B1-FEBD-4D2B-B35C-F02642781956}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D39D90B1-FEBD-4D2B-B35C-F02642781956}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D39D90B1-FEBD-4D2B-B35C-F02642781956}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CD3967C-9C38-43C8-9A4A-F74D654009FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CD3967C-9C38-43C8-9A4A-F74D654009FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CD3967C-9C38-43C8-9A4A-F74D654009FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CD3967C-9C38-43C8-9A4A-F74D654009FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0710B0B2-F54B-43B0-AFBB-9B71D5C9B800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0710B0B2-F54B-43B0-AFBB-9B71D5C9B800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0710B0B2-F54B-43B0-AFBB-9B71D5C9B800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0710B0B2-F54B-43B0-AFBB-9B71D5C9B800}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
