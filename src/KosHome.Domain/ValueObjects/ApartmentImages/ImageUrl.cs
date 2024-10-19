@@ -1,3 +1,3 @@
 namespace KosHome.Domain.ValueObjects.ApartmentImages;
 
-public record ImageUrl(string Value);
+public abstract record ImageUrl(string Value);
