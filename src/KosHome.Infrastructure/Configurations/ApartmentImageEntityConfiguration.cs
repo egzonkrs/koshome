@@ -1,4 +1,6 @@
 using KosHome.Domain.Entities.ApartmentImages;
+using KosHome.Domain.ValueObjects.ApartmentImages;
+using KosHome.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,14 +12,26 @@ internal sealed class ImageConfiguration : IEntityTypeConfiguration<ApartmentIma
     {
         builder.HasKey(image => image.Id);
 
+        builder.Property(entity => entity.Id)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
+            .IsRequired();
+        
         builder.Property(image => image.ApartmentId)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
             .IsRequired();
 
-        builder.OwnsOne(image => image.ImageUrl, imageUrlBuilder =>
-        {
-            imageUrlBuilder.Property(iu => iu.Value)
-                .HasMaxLength(255);
-        });
+        builder.Property(image => image.ImageUrl)
+            .HasConversion(image => image.Value, value => new ImageUrl(value))
+            .HasMaxLength(255)
+            .IsRequired();
+        
+        // builder.OwnsOne(image => image.ImageUrl, imageUrlBuilder =>
+        // {
+        //     imageUrlBuilder.Property(iu => iu.Value)
+        //         .HasMaxLength(255);
+        // });
 
         builder.Property(image => image.IsPrimary)
             .IsRequired();

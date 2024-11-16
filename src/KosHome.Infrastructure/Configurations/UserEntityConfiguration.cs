@@ -1,5 +1,6 @@
 using KosHome.Domain.Entities.Users;
 using KosHome.Domain.ValueObjects.Users;
+using KosHome.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,6 +12,11 @@ internal sealed class UserEntityConfiguration : IEntityTypeConfiguration<User>
     {
         builder.HasKey(user => user.Id);
 
+        builder.Property(entity => entity.Id)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
+            .IsRequired();
+        
         builder.Property(user => user.FirstName)
             .HasMaxLength(200)
             .HasConversion(firstName => firstName.Value, value => new FirstName(value));

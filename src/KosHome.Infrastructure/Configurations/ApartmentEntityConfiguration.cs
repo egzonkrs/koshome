@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using KosHome.Domain.Entities.Apartments;
+using KosHome.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace KosHome.Infrastructure.Configurations;
@@ -10,7 +11,14 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
     {
         builder.HasKey(apartment => apartment.Id);
 
+        builder.Property(entity => entity.Id)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
+            .IsRequired();
+
         builder.Property(apartment => apartment.UserId)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
             .IsRequired();
 
         builder.OwnsOne(apartment => apartment.Title, titleBuilder =>
@@ -50,6 +58,8 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
         });
 
         builder.Property(apartment => apartment.LocationId)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
             .IsRequired();
 
         builder.Property(apartment => apartment.Bedrooms)

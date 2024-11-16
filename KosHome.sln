@@ -20,8 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8CB8A1AA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{6F628132-BEFD-4B89-A795-F513C84665D5}"
 	ProjectSection(SolutionItems) = preProject
-		docker\docker-compose.dcproj = docker\docker-compose.dcproj
-		docker\docker-compose.override.yml = docker\docker-compose.override.yml
 		docker\docker-compose.yml = docker\docker-compose.yml
 	EndProjectSection
 EndProject

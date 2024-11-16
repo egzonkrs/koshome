@@ -1,4 +1,6 @@
 using KosHome.Domain.Entities.Countries;
+using KosHome.Domain.ValueObjects.Countries;
+using KosHome.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,18 +12,23 @@ internal sealed class CountryConfiguration : IEntityTypeConfiguration<Country>
     {
         builder.HasKey(country => country.Id);
 
+        builder.Property(entity => entity.Id)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
+            .IsRequired();
+        
         builder.OwnsOne(country => country.CountryName, countryNameBuilder =>
         {
-            countryNameBuilder.Property(cn => cn.Value)
+            countryNameBuilder
+                .Property(cn => cn.Value)
                 .HasMaxLength(100);
         });
 
-        builder.OwnsOne(country => country.CountryAlpha3Code, alpha3CodeBuilder =>
-        {
-            alpha3CodeBuilder.Property(ac => ac.Value)
-                .HasMaxLength(3);
-        });
-
-        builder.HasIndex(x => x.CountryAlpha3Code).IsUnique();
+        builder.Property(country => country.Alpha3Code)
+            .HasConversion(country => country.Value, value => new CountryAlpha3Code(value))
+            .HasMaxLength(3)
+            .IsRequired();
+        
+        builder.HasIndex(x => x.Alpha3Code).IsUnique();
     }
 }

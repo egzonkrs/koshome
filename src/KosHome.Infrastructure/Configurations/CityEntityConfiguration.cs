@@ -1,4 +1,7 @@
 using KosHome.Domain.Entities.Cities;
+using KosHome.Domain.ValueObjects.Cities;
+using KosHome.Domain.ValueObjects.Countries;
+using KosHome.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,7 +13,14 @@ internal sealed class CityConfiguration : IEntityTypeConfiguration<City>
     {
         builder.HasKey(city => city.Id);
 
+        builder.Property(entity => entity.Id)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
+            .IsRequired();
+        
         builder.Property(city => city.CountryId)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
             .IsRequired();
 
         builder.OwnsOne(city => city.CityName, cityNameBuilder =>
@@ -19,10 +29,9 @@ internal sealed class CityConfiguration : IEntityTypeConfiguration<City>
                 .HasMaxLength(100);
         });
 
-        builder.OwnsOne(city => city.CityAlpha3Code, alpha3CodeBuilder =>
-        {
-            alpha3CodeBuilder.Property(ac => ac.Value)
-                .HasMaxLength(3);
-        });
+        builder.Property(city => city.Alpha3Code)
+            .HasConversion(city => city.Value, value => new CityAlpha3Code(value))
+            .HasMaxLength(3)
+            .IsRequired();
     }
 }

@@ -29,9 +29,9 @@ public sealed class City : Entity
     public CityName CityName { get; private set; }
 
     /// <summary>
-    /// Gets the city CityAlpha3Code.
+    /// Gets the city Alpha3Code.
     /// </summary>
-    public CityAlpha3Code CityAlpha3Code { get; private set; }
+    public CityAlpha3Code Alpha3Code { get; private set; }
     
     /// <summary>
     /// Gets the country identifier.
@@ -42,7 +42,7 @@ public sealed class City : Entity
     /// Creates a new city instance.
     /// </summary>
     /// <param name="cityName">Name of the city.</param>
-    /// <param name="cityAlpha3Code">The CityAlpha3Code of the city.</param>
+    /// <param name="cityAlpha3Code">The Alpha3Code of the city.</param>
     /// <param name="countryId">Identifier of the country.</param>
     /// <returns>A new <see cref="City"/> instance.</returns>
     public static City Create(
