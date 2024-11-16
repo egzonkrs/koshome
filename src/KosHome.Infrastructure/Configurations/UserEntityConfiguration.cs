@@ -8,8 +8,12 @@ namespace KosHome.Infrastructure.Configurations;
 
 internal sealed class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
+    private const string TableName = "users";
+
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.ToTable(TableName);
+
         builder.HasKey(user => user.Id);
 
         builder.Property(entity => entity.Id)

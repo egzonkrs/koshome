@@ -20,7 +20,7 @@ public sealed class DataModule : IModule
     public void Load(IServiceCollection services)
     {
         var connectionString = _configuration.GetConnectionString("DefaultConnection")
-            ?? throw new ArgumentException(nameof(_configuration), "Cannot find 'DefaultConnection' section inside the configuration");
+            ?? throw new ArgumentNullException(nameof(_configuration), "Cannot find 'DefaultConnection' section inside the configuration");
         
         services.AddDbContextPool<ApplicationDbContext>(opt =>
         {

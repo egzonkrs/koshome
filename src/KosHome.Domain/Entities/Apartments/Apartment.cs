@@ -22,7 +22,10 @@ public sealed class Apartment : Entity
         Ulid locationId,
         int bedrooms,
         int bathrooms,
-        int squareMeters) : base(id)
+        int squareMeters,
+        double latitude,
+        double longitude
+        ) : base(id)
     {
         UserId = userId;
         Title = title;
@@ -35,6 +38,10 @@ public sealed class Apartment : Entity
         Bedrooms = bedrooms;
         Bathrooms = bathrooms;
         SquareMeters = squareMeters;
+        Latitude = latitude;
+        Longitude = longitude;
+        SquareMeters = squareMeters;
+        
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
@@ -97,6 +104,16 @@ public sealed class Apartment : Entity
     /// Gets the size in square meters.
     /// </summary>
     public int SquareMeters { get; private set; }
+    
+    /// <summary>
+    /// Gets the latitude of the apartment's location.
+    /// </summary>
+    public double Latitude { get; private set; }
+
+    /// <summary>
+    /// Gets the longitude of the apartment's location.
+    /// </summary>
+    public double Longitude { get; private set; }
 
     /// <summary>
     /// Gets the creation date and time.
@@ -134,7 +151,9 @@ public sealed class Apartment : Entity
         Ulid locationId,
         int bedrooms,
         int bathrooms,
-        int squareMeters)
+        int squareMeters,
+        double latitude,
+        double longitude)
     {
         var apartment = new Apartment(
             Ulid.NewUlid(),
@@ -148,7 +167,9 @@ public sealed class Apartment : Entity
             locationId,
             bedrooms,
             bathrooms,
-            squareMeters);
+            squareMeters,
+            latitude,
+            longitude);
 
         apartment.RaiseDomainEvent(new ApartmentCreatedDomainEvent(apartment.Id));
         return apartment;

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KosHome.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241116194309_InitMigration")]
-    partial class InitMigration
+    [Migration("20241116231726_SetupRelationships")]
+    partial class SetupRelationships
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,14 +42,15 @@ namespace KosHome.Infrastructure.Migrations
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("ImageUrl");
 
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApartmentImage");
+                    b.ToTable("apartment_images", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.Apartments.Apartment", b =>
@@ -67,10 +68,16 @@ namespace KosHome.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision");
+
                     b.Property<string>("LocationId")
                         .IsRequired()
                         .HasMaxLength(26)
                         .HasColumnType("character varying(26)");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("SquareMeters")
                         .HasColumnType("integer");
@@ -85,7 +92,11 @@ namespace KosHome.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Apartment");
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("apartments", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.Cities.City", b =>
@@ -97,7 +108,8 @@ namespace KosHome.Infrastructure.Migrations
                     b.Property<string>("Alpha3Code")
                         .IsRequired()
                         .HasMaxLength(3)
-                        .HasColumnType("character varying(3)");
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("Alpha3Code");
 
                     b.Property<string>("CountryId")
                         .IsRequired()
@@ -106,7 +118,9 @@ namespace KosHome.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("City");
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("citites", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.Countries.Country", b =>
@@ -118,14 +132,15 @@ namespace KosHome.Infrastructure.Migrations
                     b.Property<string>("Alpha3Code")
                         .IsRequired()
                         .HasMaxLength(3)
-                        .HasColumnType("character varying(3)");
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("Alpha3Code");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Alpha3Code")
                         .IsUnique();
 
-                    b.ToTable("Country");
+                    b.ToTable("countries", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.Users.User", b =>
@@ -157,11 +172,23 @@ namespace KosHome.Infrastructure.Migrations
                     b.HasIndex("IdentityId")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.Apartments.Apartment", b =>
                 {
+                    b.HasOne("KosHome.Domain.Entities.Cities.City", null)
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("KosHome.Domain.Entities.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("KosHome.Domain.ValueObjects.Apartments.Address", "Address", b1 =>
                         {
                             b1.Property<string>("ApartmentId")
@@ -169,11 +196,12 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .HasMaxLength(255)
-                                .HasColumnType("character varying(255)");
+                                .HasColumnType("character varying(255)")
+                                .HasColumnName("Address");
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("Apartment");
+                            b1.ToTable("apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -186,11 +214,12 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .HasMaxLength(2000)
-                                .HasColumnType("character varying(2000)");
+                                .HasColumnType("character varying(2000)")
+                                .HasColumnName("Description");
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("Apartment");
+                            b1.ToTable("apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -203,11 +232,12 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .HasMaxLength(10)
-                                .HasColumnType("character varying(10)");
+                                .HasColumnType("character varying(10)")
+                                .HasColumnName("ListingType");
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("Apartment");
+                            b1.ToTable("apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -219,11 +249,12 @@ namespace KosHome.Infrastructure.Migrations
                                 .HasColumnType("character varying(26)");
 
                             b1.Property<decimal>("Value")
-                                .HasColumnType("decimal(18,2)");
+                                .HasColumnType("decimal(18,2)")
+                                .HasColumnName("Price");
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("Apartment");
+                            b1.ToTable("apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -236,11 +267,12 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .HasMaxLength(50)
-                                .HasColumnType("character varying(50)");
+                                .HasColumnType("character varying(50)")
+                                .HasColumnName("PropertyType");
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("Apartment");
+                            b1.ToTable("apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -253,11 +285,12 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .HasMaxLength(255)
-                                .HasColumnType("character varying(255)");
+                                .HasColumnType("character varying(255)")
+                                .HasColumnName("Title");
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("Apartment");
+                            b1.ToTable("apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -278,6 +311,12 @@ namespace KosHome.Infrastructure.Migrations
 
             modelBuilder.Entity("KosHome.Domain.Entities.Cities.City", b =>
                 {
+                    b.HasOne("KosHome.Domain.Entities.Countries.Country", null)
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.OwnsOne("KosHome.Domain.ValueObjects.Cities.CityName", "CityName", b1 =>
                         {
                             b1.Property<string>("CityId")
@@ -285,11 +324,12 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("CityName");
 
                             b1.HasKey("CityId");
 
-                            b1.ToTable("City");
+                            b1.ToTable("citites");
 
                             b1.WithOwner()
                                 .HasForeignKey("CityId");
@@ -307,11 +347,12 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .HasMaxLength(100)
-                                .HasColumnType("character varying(100)");
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("CountryName");
 
                             b1.HasKey("CountryId");
 
-                            b1.ToTable("Country");
+                            b1.ToTable("countries");
 
                             b1.WithOwner()
                                 .HasForeignKey("CountryId");

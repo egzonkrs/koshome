@@ -3,6 +3,7 @@ using System;
 using KosHome.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KosHome.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241116220628_SetupProjectStructure")]
+    partial class SetupProjectStructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,8 +50,6 @@ namespace KosHome.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApartmentId");
-
                     b.ToTable("apartment_images", (string)null);
                 });
 
@@ -67,16 +68,10 @@ namespace KosHome.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<double>("Latitude")
-                        .HasColumnType("double precision");
-
                     b.Property<string>("LocationId")
                         .IsRequired()
                         .HasMaxLength(26)
                         .HasColumnType("character varying(26)");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("double precision");
 
                     b.Property<int>("SquareMeters")
                         .HasColumnType("integer");
@@ -90,10 +85,6 @@ namespace KosHome.Infrastructure.Migrations
                         .HasColumnType("character varying(26)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("apartments", (string)null);
                 });
@@ -116,8 +107,6 @@ namespace KosHome.Infrastructure.Migrations
                         .HasColumnType("character varying(26)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("citites", (string)null);
                 });
@@ -174,29 +163,8 @@ namespace KosHome.Infrastructure.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("KosHome.Domain.Entities.ApartmentImages.ApartmentImage", b =>
-                {
-                    b.HasOne("KosHome.Domain.Entities.Apartments.Apartment", null)
-                        .WithMany()
-                        .HasForeignKey("ApartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("KosHome.Domain.Entities.Apartments.Apartment", b =>
                 {
-                    b.HasOne("KosHome.Domain.Entities.Cities.City", null)
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("KosHome.Domain.Entities.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsOne("KosHome.Domain.ValueObjects.Apartments.Address", "Address", b1 =>
                         {
                             b1.Property<string>("ApartmentId")
@@ -319,12 +287,6 @@ namespace KosHome.Infrastructure.Migrations
 
             modelBuilder.Entity("KosHome.Domain.Entities.Cities.City", b =>
                 {
-                    b.HasOne("KosHome.Domain.Entities.Countries.Country", null)
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.OwnsOne("KosHome.Domain.ValueObjects.Cities.CityName", "CityName", b1 =>
                         {
                             b1.Property<string>("CityId")

@@ -8,8 +8,12 @@ namespace KosHome.Infrastructure.Configurations;
 
 internal sealed class CountryConfiguration : IEntityTypeConfiguration<Country>
 {
+    private const string TableName = "countries";
+
     public void Configure(EntityTypeBuilder<Country> builder)
     {
+        builder.ToTable(TableName);
+
         builder.HasKey(country => country.Id);
 
         builder.Property(entity => entity.Id)
@@ -21,11 +25,13 @@ internal sealed class CountryConfiguration : IEntityTypeConfiguration<Country>
         {
             countryNameBuilder
                 .Property(cn => cn.Value)
+                .HasColumnName(nameof(Country.CountryName))
                 .HasMaxLength(100);
         });
 
         builder.Property(country => country.Alpha3Code)
             .HasConversion(country => country.Value, value => new CountryAlpha3Code(value))
+            .HasColumnName(nameof(Country.Alpha3Code))
             .HasMaxLength(3)
             .IsRequired();
         

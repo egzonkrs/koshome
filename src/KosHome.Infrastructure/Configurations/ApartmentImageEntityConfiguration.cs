@@ -8,8 +8,12 @@ namespace KosHome.Infrastructure.Configurations;
 
 internal sealed class ImageConfiguration : IEntityTypeConfiguration<ApartmentImage>
 {
+    private const string TableName = "apartment_images";
+
     public void Configure(EntityTypeBuilder<ApartmentImage> builder)
     {
+        builder.ToTable(TableName);
+
         builder.HasKey(image => image.Id);
 
         builder.Property(entity => entity.Id)
@@ -24,14 +28,9 @@ internal sealed class ImageConfiguration : IEntityTypeConfiguration<ApartmentIma
 
         builder.Property(image => image.ImageUrl)
             .HasConversion(image => image.Value, value => new ImageUrl(value))
+            .HasColumnName(nameof(ApartmentImage.ImageUrl))
             .HasMaxLength(255)
             .IsRequired();
-        
-        // builder.OwnsOne(image => image.ImageUrl, imageUrlBuilder =>
-        // {
-        //     imageUrlBuilder.Property(iu => iu.Value)
-        //         .HasMaxLength(255);
-        // });
 
         builder.Property(image => image.IsPrimary)
             .IsRequired();
