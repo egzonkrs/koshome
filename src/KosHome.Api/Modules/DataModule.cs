@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace KosHome.WebApi.Modules;
+namespace KosHome.Api.Modules;
 
 public sealed class DataModule : IModule
 {

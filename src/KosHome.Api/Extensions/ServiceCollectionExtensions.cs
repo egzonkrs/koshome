@@ -2,7 +2,7 @@ using System;
 using KosHome.Domain.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace KosHome.WebApi.Extensions;
+namespace KosHome.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {

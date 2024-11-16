@@ -1,5 +1,5 @@
-using KosHome.WebApi.Extensions;
-using KosHome.WebApi.Modules;
+using KosHome.Api.Extensions;
+using KosHome.Api.Modules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;

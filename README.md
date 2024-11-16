@@ -1,37 +1,15 @@
 # KosHome
 
-## Overview
-
-### Sequence Diagrams
-
-* Hello World
-    * [Hello World](./diagrams/helloworld.png)
-
-#### PlantUML Generator
-
-```
-rm -f diagrams/*.png
-docker run --rm -v $(pwd):/data hrektts/plantuml plantuml diagrams/*
-```
-
 ## Build and Run
 
 You can build and run the application using one of the following methods.
 
-### Docker (same as build server) - preferred
-
+#### Adding a new migration
 ```
-cd docker
-docker-compose up --build
+dotnet ef migrations add NewMigrationName --project src/KosHome.Infrastructure --startup-project src/KosHome.Api
 ```
 
-### Dotnet CLI
+#### Applying existing migrations
 ```
-dotnet run --project src/KosHome.WebApi/KosHome.WebApi.csproj
-```
-
-### Dotnet CLI
-
-```
-dotnet test --filter "Category=Unit|Category=Integration|Category=Component" KosHome.sln 
+dotnet ef database update --project src/KosHome.Infrastructure --startup-project src/KosHome.Api
 ```

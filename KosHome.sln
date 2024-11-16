@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.Infrastructure", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.Application", "src\KosHome.Application\KosHome.Application.csproj", "{D39D90B1-FEBD-4D2B-B35C-F02642781956}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.WebApi", "src\KosHome.WebApi\KosHome.WebApi.csproj", "{6CD3967C-9C38-43C8-9A4A-F74D654009FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.Api", "src\KosHome.Api\KosHome.Api.csproj", "{6CD3967C-9C38-43C8-9A4A-F74D654009FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KosHome.Domain", "src\KosHome.Domain\KosHome.Domain.csproj", "{0710B0B2-F54B-43B0-AFBB-9B71D5C9B800}"
 EndProject

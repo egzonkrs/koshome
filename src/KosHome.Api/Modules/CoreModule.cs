@@ -1,7 +1,7 @@
 using KosHome.Domain.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace KosHome.WebApi.Modules;
+namespace KosHome.Api.Modules;
 
 public sealed class CoreModule : IModule
 {

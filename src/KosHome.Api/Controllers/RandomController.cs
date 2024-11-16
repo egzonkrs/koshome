@@ -2,7 +2,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace KosHome.WebApi.Controllers;
+namespace KosHome.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
