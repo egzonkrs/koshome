@@ -1,8 +1,13 @@
+using KosHome.WebApi.Extensions;
+using KosHome.WebApi.Modules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddModule(new CoreModule());
+builder.Services.AddModule(new DataModule(builder.Configuration));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

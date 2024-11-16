@@ -19,12 +19,10 @@ internal sealed class CityConfiguration : IEntityTypeConfiguration<City>
                 .HasMaxLength(100);
         });
 
-        // Optional: If including Alpha3Code in City
-        // builder.OwnsOne(city => city.Alpha3Code, alpha3CodeBuilder =>
-        // {
-        //     alpha3CodeBuilder.Property(ac => ac.Value)
-        //         .HasColumnName("Alpha3Code")
-        //         .HasMaxLength(3);
-        // });
+        builder.OwnsOne(city => city.CityAlpha3Code, alpha3CodeBuilder =>
+        {
+            alpha3CodeBuilder.Property(ac => ac.Value)
+                .HasMaxLength(3);
+        });
     }
 }

@@ -2,18 +2,15 @@
     <PropertyGroup>
         <Product>$(AssemblyName) ($(TargetFramework))</Product>
         <DefaultLanguage>en-GB</DefaultLanguage>
-        <Authors>SampleAuthor</Authors>
-        <Copyright>© $([System.DateTime]::Now.Year) SampleAuthor</Copyright>
-        <RepositoryUrl>SampleAuthor/KosHome</RepositoryUrl>
+        <Authors>EgzonKrs</Authors>
+        <Copyright>© $([System.DateTime]::Now.Year) EgzonKrs</Copyright>
+        <RepositoryUrl>egzonkrs/koshome</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <!-- Root control Version Prefix -->
         <AssemblyName>$(MSBuildProjectName)</AssemblyName>
         <AssemblyVersion>$(Version)</AssemblyVersion>
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
         <Deterministic>False</Deterministic>
         <LangVersion>latest</LangVersion>
         <NoWarn>NU5105</NoWarn>
-<!--        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>-->
     </PropertyGroup>
-
 </Project>

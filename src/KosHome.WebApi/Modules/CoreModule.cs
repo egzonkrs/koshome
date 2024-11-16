@@ -7,6 +7,5 @@ public sealed class CoreModule : IModule
 {
     public void Load(IServiceCollection services)
     {
-        throw new System.NotImplementedException();
     }
 }

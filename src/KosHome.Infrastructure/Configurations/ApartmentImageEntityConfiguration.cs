@@ -13,7 +13,6 @@ internal sealed class ImageConfiguration : IEntityTypeConfiguration<ApartmentIma
         builder.Property(image => image.ApartmentId)
             .IsRequired();
 
-        // Configure ImageUrl as a Value Object
         builder.OwnsOne(image => image.ImageUrl, imageUrlBuilder =>
         {
             imageUrlBuilder.Property(iu => iu.Value)

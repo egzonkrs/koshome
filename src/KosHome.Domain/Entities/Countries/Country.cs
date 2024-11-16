@@ -13,10 +13,10 @@ public sealed class Country : Entity
     private Country(
         Ulid id,
         CountryName countryName,
-        Alpha3Code alpha3Code) : base(id)
+        CountryAlpha3Code countryAlpha3Code) : base(id)
     {
         CountryName = countryName;
-        Alpha3Code = alpha3Code;
+        CountryAlpha3Code = countryAlpha3Code;
     }
 
     private Country()
@@ -31,7 +31,7 @@ public sealed class Country : Entity
     /// <summary>
     /// Gets the Alpha-3 country code.
     /// </summary>
-    public Alpha3Code Alpha3Code { get; private set; }
+    public CountryAlpha3Code CountryAlpha3Code { get; private set; }
 
     /// <summary>
     /// Creates a new country instance.
@@ -41,7 +41,7 @@ public sealed class Country : Entity
     /// <returns>A new <see cref="Country"/> instance.</returns>
     public static Country Create(
         CountryName countryName,
-        Alpha3Code alpha3Code)
+        CountryAlpha3Code alpha3Code)
     {
         var country = new Country(
             Ulid.NewUlid(),

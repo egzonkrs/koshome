@@ -16,12 +16,12 @@ internal sealed class CountryConfiguration : IEntityTypeConfiguration<Country>
                 .HasMaxLength(100);
         });
 
-        builder.OwnsOne(country => country.Alpha3Code, alpha3CodeBuilder =>
+        builder.OwnsOne(country => country.CountryAlpha3Code, alpha3CodeBuilder =>
         {
             alpha3CodeBuilder.Property(ac => ac.Value)
                 .HasMaxLength(3);
         });
 
-        builder.HasIndex(x => x.Alpha3Code).IsUnique();
+        builder.HasIndex(x => x.CountryAlpha3Code).IsUnique();
     }
 }
