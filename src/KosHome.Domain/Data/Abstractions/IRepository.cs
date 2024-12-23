@@ -3,9 +3,9 @@ using System;
 namespace KosHome.Domain.Data.Abstractions;
 
 /// <summary>
-/// The Repository with Primary Key of Data Type long.
+/// The Repository with a primary key of type Ulid.
 /// </summary>
-/// <typeparam name="TEntity">The DomainEntity Data Type.</typeparam>
-public interface IRepository<TEntity> : IRepository<Ulid, TEntity> where TEntity : DomainEntity
+/// <typeparam name="TEntity">The domain entity type.</typeparam>
+public interface IRepository<TEntity> : IRepository<Ulid, TEntity> where TEntity : DomainEntity, IEntity<Ulid>
 {
 }

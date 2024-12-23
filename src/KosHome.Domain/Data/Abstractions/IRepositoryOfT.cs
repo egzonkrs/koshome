@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 
 namespace KosHome.Domain.Data.Abstractions;
 
-
 /// <summary>
 /// The repository.
 /// </summary>
 /// <typeparam name="TPrimaryKey">The Primary Key Data Type.</typeparam>
 /// <typeparam name="TEntity">The DomainEntity Data Type.</typeparam>
-public interface IRepository<TPrimaryKey, TEntity> where TEntity : DomainEntity
+public interface IRepository<TPrimaryKey, TEntity> where TEntity : DomainEntity, IEntity<TPrimaryKey>
 {
     // /// <summary>
     // /// Gets a list of all Entities.
@@ -48,7 +47,7 @@ public interface IRepository<TPrimaryKey, TEntity> where TEntity : DomainEntity
     /// </summary>
     /// <param name="entity">The DomainEntity.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
-    /// <returns>The Primary Ket of the newly inserted DomainEntity.</returns>
+    /// <returns>The Primary Key of the newly inserted DomainEntity.</returns>
     Task<TPrimaryKey> InsertAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>

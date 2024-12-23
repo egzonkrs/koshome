@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using KosHome.Domain.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using KosHome.Domain.Data.Abstractions;
 
 namespace KosHome.Infrastructure.Data.Abstractions;
 
@@ -14,7 +11,8 @@ namespace KosHome.Infrastructure.Data.Abstractions;
 /// </summary>
 /// <typeparam name="TPrimaryKey"></typeparam>
 /// <typeparam name="TEntity"></typeparam>
-public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrimaryKey, TEntity> where TEntity : DomainEntity, IEntity<Ulid>
+public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrimaryKey, TEntity> 
+    where TEntity : DomainEntity, IEntity<TPrimaryKey>
 {
     private readonly DbSet<TEntity> _dbSet;
     // private readonly IEnumerable<IQueryFilter> _queryFilters;
@@ -76,7 +74,7 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
     public async Task<TPrimaryKey> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(entity, cancellationToken);
-        throw new NotImplementedException();
+        return entity.Id;
     }
 
     /// <inheritdoc />

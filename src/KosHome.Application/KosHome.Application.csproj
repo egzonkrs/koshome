@@ -5,6 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="MediatR" />
+      <PackageReference Include="FluentResults" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <ProjectReference Include="..\KosHome.Domain\KosHome.Domain.csproj"/>
     </ItemGroup>
 
