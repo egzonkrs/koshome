@@ -1,5 +1,6 @@
 using System;
 using KosHome.Domain.Abstractions;
+using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Events.Countries;
 using KosHome.Domain.ValueObjects.Countries;
 
@@ -8,13 +9,14 @@ namespace KosHome.Domain.Entities.Countries;
 /// <summary>
 /// Represents a country entity.
 /// </summary>
-public sealed class Country : Entity
+public sealed class Country : DomainEntity
 {
     private Country(
         Ulid id,
         CountryName countryName,
-        CountryAlpha3Code alpha3Code) : base(id)
+        CountryAlpha3Code alpha3Code)
     {
+        Id = id;
         CountryName = countryName;
         Alpha3Code = alpha3Code;
     }
@@ -23,6 +25,11 @@ public sealed class Country : Entity
     {
     }
 
+    /// <summary>
+    /// The Id of the country.
+    /// </summary>
+    public Ulid Id { get; private set; }
+    
     /// <summary>
     /// Gets the country name.
     /// </summary>

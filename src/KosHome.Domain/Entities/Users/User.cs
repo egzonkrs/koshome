@@ -1,5 +1,6 @@
 using System;
 using KosHome.Domain.Abstractions;
+using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Events.Users;
 using KosHome.Domain.ValueObjects.Users;
 
@@ -8,7 +9,7 @@ namespace KosHome.Domain.Entities.Users;
 /// <summary>
 /// Represents a user entity.
 /// </summary>
-public sealed class User : Entity
+public sealed class User : DomainEntity, IEntity<Ulid>
 {
     /// <summary>
     /// Initializes a new instance with specified parameters.
@@ -17,8 +18,9 @@ public sealed class User : Entity
     /// <param name="firstName">User's first name.</param>
     /// <param name="lastName">User's last name.</param>
     /// <param name="email">User's email address.</param>
-    private User(Ulid id, FirstName firstName, LastName lastName, Email email) : base(id)
+    private User(Ulid id, FirstName firstName, LastName lastName, Email email)
     {
+        Id = id;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
@@ -31,6 +33,11 @@ public sealed class User : Entity
     {
     }
 
+    /// <summary>
+    /// The Id of the user.
+    /// </summary>
+    public Ulid Id { get; set; }
+    
     /// <summary>
     /// Gets the user's first name.
     /// </summary>

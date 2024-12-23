@@ -1,5 +1,6 @@
 using System;
 using KosHome.Domain.Abstractions;
+using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Events.ApartmentImages;
 using KosHome.Domain.ValueObjects.ApartmentImages;
 
@@ -8,14 +9,15 @@ namespace KosHome.Domain.Entities.ApartmentImages;
 /// <summary>
 /// Represents an image entity associated with an apartment.
 /// </summary>
-public sealed class ApartmentImage : Entity
+public sealed class ApartmentImage : DomainEntity, IEntity<Ulid>
 {
     private ApartmentImage(
         Ulid id,
         Ulid apartmentId,
         ImageUrl imageUrl,
-        bool isPrimary) : base(id)
+        bool isPrimary)
     {
+        Id = id;
         ApartmentId = apartmentId;
         ImageUrl = imageUrl;
         IsPrimary = isPrimary;
@@ -26,6 +28,11 @@ public sealed class ApartmentImage : Entity
     {
     }
 
+    /// <summary>
+    /// The unique identifier of the apartment image.
+    /// </summary>
+    public Ulid Id { get; set; }
+    
     /// <summary>
     /// Gets the apartment identifier.
     /// </summary>

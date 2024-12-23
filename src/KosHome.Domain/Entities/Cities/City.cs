@@ -1,5 +1,6 @@
 using System;
 using KosHome.Domain.Abstractions;
+using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Events.Cities;
 using KosHome.Domain.ValueObjects.Cities;
 
@@ -7,13 +8,13 @@ namespace KosHome.Domain.Entities.Cities;
 /// <summary>
 /// Represents a city entity.
 /// </summary>
-public sealed class City : Entity
+public sealed class City : DomainEntity
 {
     private City(
         Ulid id,
         CityName cityName,
         CityAlpha3Code cityAlpha3Code,
-        Ulid countryId) : base(id)
+        Ulid countryId)
     {
         CityName = cityName;
         CountryId = countryId;
@@ -22,6 +23,11 @@ public sealed class City : Entity
     private City()
     {
     }
+    
+    /// <summary>
+    /// The Id of the city.
+    /// </summary>
+    public Ulid Id { get; set; }
 
     /// <summary>
     /// Gets the city name.

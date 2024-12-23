@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KosHome.Domain.Abstractions;
 
-namespace KosHome.Domain.Abstractions;
+namespace KosHome.Domain.Data.Abstractions;
 
 /// <summary>
 /// Base class for entities with domain events.
 /// </summary>
-public abstract class Entity
+public abstract class DomainEntity
 {
-    /// <summary>
-    /// Unique identifier of the entity.
-    /// </summary>
-    public Ulid Id { get; init; }
-
     private readonly List<IDomainEvent> _domainEvents = new();
 
     /// <summary>
@@ -22,18 +18,9 @@ public abstract class Entity
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.ToList();
 
     /// <summary>
-    /// Initializes a new instance with the specified ID.
-    /// </summary>
-    /// <param name="id">The unique identifier.</param>
-    protected Entity(Ulid id)
-    {
-        Id = id;
-    }
-
-    /// <summary>
     /// Initializes a new instance.
     /// </summary>
-    protected Entity()
+    protected DomainEntity()
     {
     }
 

@@ -1,5 +1,6 @@
 using System;
 using KosHome.Domain.Abstractions;
+using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Events.Apartments;
 using KosHome.Domain.ValueObjects.Apartments;
 
@@ -8,7 +9,7 @@ namespace KosHome.Domain.Entities.Apartments;
 /// <summary>
 /// Represents an apartment entity.
 /// </summary>
-public sealed class Apartment : Entity
+public sealed class Apartment : DomainEntity, IEntity<Ulid>
 {
     private Apartment(
         Ulid id,
@@ -25,8 +26,9 @@ public sealed class Apartment : Entity
         int squareMeters,
         double latitude,
         double longitude
-        ) : base(id)
+        )
     {
+        Id = id;
         UserId = userId;
         Title = title;
         Description = description;
@@ -49,6 +51,11 @@ public sealed class Apartment : Entity
     private Apartment()
     {
     }
+    
+    /// <summary>
+    /// The Id of the apartment.
+    /// </summary>
+    public Ulid Id { get; set; }
 
     /// <summary>
     /// Gets the user identifier who owns the apartment.
@@ -139,6 +146,8 @@ public sealed class Apartment : Entity
     /// <param name="bedrooms">Number of bedrooms.</param>
     /// <param name="bathrooms">Number of bathrooms.</param>
     /// <param name="squareMeters">Size in square meters.</param>
+    /// <param name="latitude"></param>
+    /// <param name="longitude"></param>
     /// <returns>A new <see cref="Apartment"/> instance.</returns>
     public static Apartment Create(
         Ulid userId,
