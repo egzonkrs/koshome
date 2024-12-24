@@ -1,16 +1,34 @@
+using System;
 using System.Threading;
+using System.Transactions;
 using System.Threading.Tasks;
 
 namespace KosHome.Domain.Data.Abstractions;
 
-public interface IUnitOfWork
+/// <summary>
+/// The Unit of Work.
+/// </summary>
+public interface IUnitOfWork<TContext>
 {
     /// <summary>
-    /// Asynchronously saves all changes made in the context of the current unit of work.
+    /// Saves all the changes made in the context to the database.
     /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous save operation. The task result contains
-    /// the number of state entries written to the underlying database.
-    /// </returns>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/></param>
+    /// <returns>The number of entries written to the database.</returns>
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Executes an asynchronous operations inside a Transaction Scope.
+    /// </summary>
+    /// <typeparam name="T">The Data Type.</typeparam>
+    /// <param name="operation">The Operation to execute.</param>
+    /// <param name="isolationLevel">The Isolation Level. Defaults to "ReadCommitted".</param>
+    Task<T> ExecuteTransactionAsync<T>(Func<TransactionScope, Task<T>> operation, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+
+    /// <summary>
+    /// Executes an asynchronous operations inside a Transaction Scope.
+    /// </summary>
+    /// <param name="operation">The Operation to execute.</param>
+    /// <param name="isolationLevel">The Isolation Level. Defaults to "ReadCommitted".</param>
+    Task ExecuteTransactionAsync(Func<TransactionScope, Task> operation, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
 }

@@ -8,6 +8,10 @@ namespace KosHome.Api.Controllers;
 [Route("[controller]")]
 public class RandomController : ControllerBase
 {
+    public RandomController()
+    {
+        
+    }
     [HttpGet(Name = "GetRandomInt")]
     public IEnumerable<int> Get()
     {
