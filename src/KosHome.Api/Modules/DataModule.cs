@@ -1,10 +1,14 @@
 using System;
 using System.Configuration;
 using KosHome.Domain.Abstractions;
+using KosHome.Domain.Data.Repositories;
+using KosHome.Domain.Entities.Cities;
 using KosHome.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using KosHome.Infrastructure.Data.Extensions;
+using KosHome.Infrastructure.Data.Repositories;
 
 namespace KosHome.Api.Modules;
 
@@ -26,5 +30,8 @@ public sealed class DataModule : IModule
         {
             opt.UseNpgsql(connectionString);
         });
+        
+        services.AddEfCoreUnitOfWork<ApplicationDbContext>();
+        services.AddEfCoreRepository<City, ICityRepository, CityRepository>();
     }
 }

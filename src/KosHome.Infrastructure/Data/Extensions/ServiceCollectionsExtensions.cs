@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace KosHome.Infrastructure.Data.Extensions;
 
-
 /// <summary>
 /// The <see cref="IServiceCollection" /> Extensions.
 /// </summary>
@@ -56,7 +55,7 @@ public static class ServiceCollectionExtensions
     /// <typeparam name="TImplementation">The type of the implementation to use.</typeparam>
     /// <returns>The same <see cref="IServiceCollection"/> so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when the <see cref="IServiceCollection"/> is not set.</exception>
-    private static IServiceCollection AddEfCoreRepository<TEntity, TService, TImplementation>(
+    public static IServiceCollection AddEfCoreRepository<TEntity, TService, TImplementation>(
         [NotNull] this IServiceCollection services)
         where TEntity : DomainEntity, IEntity
         where TService : class, IRepository<TEntity>

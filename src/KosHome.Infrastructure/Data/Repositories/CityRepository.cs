@@ -11,7 +11,7 @@ namespace KosHome.Infrastructure.Data.Repositories;
 /// <summary>
 /// Provides EF Core operations for City.
 /// </summary>
-public sealed class CityRepository : EfRepositoryBase<Ulid, City>, ICityRepository
+public sealed class CityRepository : EfRepositoryBase<City>, ICityRepository
 {
     public CityRepository(ApplicationDbContext dbContext) : base(dbContext)
     {

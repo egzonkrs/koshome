@@ -9,7 +9,7 @@ namespace KosHome.Domain.Entities.Cities;
 /// <summary>
 /// Represents a city entity.
 /// </summary>
-public sealed class City : DomainEntity, IEntity<Ulid>
+public sealed class City : DomainEntity, IEntity
 {
     private City(
         Ulid id,

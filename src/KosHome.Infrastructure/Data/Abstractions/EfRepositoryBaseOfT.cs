@@ -50,7 +50,7 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
     /// <inheritdoc />
     public Task<TEntity> GetByIdAsync(TPrimaryKey id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return _dbSet.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
         // return QueryFiltersInternal().FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
     }
 

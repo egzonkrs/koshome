@@ -10,7 +10,7 @@ namespace KosHome.Domain.Data.Repositories;
 /// <summary>
 /// Defines database operations for City.
 /// </summary>
-public interface ICityRepository : IRepository<Ulid, City>
+public interface ICityRepository : IRepository<City>
 {
     Task<City> GetByNameAsync(CityName cityName, CancellationToken cancellationToken = default);
 }
