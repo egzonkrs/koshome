@@ -1,11 +1,8 @@
 using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using KosHome.Application.Cities.GetCities;
-using KosHome.Domain.Data.Repositories;
 using MediatR;
 
 namespace KosHome.Api.Controllers;

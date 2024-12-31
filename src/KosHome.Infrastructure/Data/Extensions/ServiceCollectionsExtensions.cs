@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.TryAddScoped<IUnitOfWork<TContext>, EfUnitOfWork<TContext>>();
+        services.TryAddScoped<IUnitOfWork, EfUnitOfWork<TContext>>();
 
         return services;
     }

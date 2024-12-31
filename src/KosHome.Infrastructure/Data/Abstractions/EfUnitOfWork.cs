@@ -10,9 +10,9 @@ namespace KosHome.Infrastructure.Data.Abstractions;
 /// <summary>
 /// EF Core Unit of Work.
 /// </summary>
-public class EfUnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
+public class EfUnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
 {
-    private readonly DbContext _dbContext;
+    private readonly TContext _dbContext;
 
     /// <summary>
     /// Constructor.

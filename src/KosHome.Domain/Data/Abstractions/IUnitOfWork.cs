@@ -8,7 +8,7 @@ namespace KosHome.Domain.Data.Abstractions;
 /// <summary>
 /// The Unit of Work.
 /// </summary>
-public interface IUnitOfWork<TContext>
+public interface IUnitOfWork
 {
     /// <summary>
     /// Saves all the changes made in the context to the database.

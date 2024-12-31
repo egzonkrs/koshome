@@ -1,5 +1,4 @@
 using System;
-using KosHome.Domain.Abstractions;
 using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Events.Users;
 using KosHome.Domain.ValueObjects.Users;
@@ -54,7 +53,7 @@ public sealed class User : DomainEntity, IEntity<Ulid>
     public Email Email { get; private set; }
 
     /// <summary>
-    /// Gets or sets the identity ID.
+    /// Gets or sets the Identity Id of Keycloak.
     /// </summary>
     public string IdentityId { get; private set; } = string.Empty;
     
