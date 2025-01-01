@@ -44,6 +44,7 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
         });
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        throw new NotImplementedException();
+
+        return keycloakIdentityId;
     }
 }

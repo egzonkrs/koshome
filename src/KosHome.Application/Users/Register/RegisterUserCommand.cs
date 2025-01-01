@@ -1,7 +1,6 @@
 using System;
 using MediatR;
 using FluentResults;
-using KosHome.Application.Abstractions.Auth;
 using KosHome.Domain.Entities.Users;
 
 namespace KosHome.Application.Users.Register;

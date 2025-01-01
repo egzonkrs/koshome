@@ -40,12 +40,6 @@ public static class UsersErrors
         => new CustomFluentError("UNAUTHORIZED", "User is not authorized to perform this action.");
 
     /// <summary>
-    /// Returns an error indicating that the filter is invalid or malformed.
-    /// </summary>
-    public static Error FilterInvalid
-        = new CustomFluentError("FILTER_INVALID", "The filter is invalid or malformed.");
-
-    /// <summary>
     /// Returns an error indicating that the specified identity role is invalid.
     /// </summary>
     public static Error IdentityRoleInvalid

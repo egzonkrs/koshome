@@ -15,7 +15,7 @@ namespace KosHome.Domain.Data.Repositories;
 public interface IUserRepository : IRepository<User>
 {
     /// <summary>
-    /// 
+    /// Gets a user by email.
     /// </summary>
     /// <param name="email"></param>
     /// <param name="cancellationToken"></param>
