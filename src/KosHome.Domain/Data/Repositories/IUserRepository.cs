@@ -1,10 +1,7 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using KosHome.Domain.Data.Abstractions;
-using KosHome.Domain.Entities.Cities;
 using KosHome.Domain.Entities.Users;
-using KosHome.Domain.ValueObjects.Cities;
 using KosHome.Domain.ValueObjects.Users;
 
 namespace KosHome.Domain.Data.Repositories;
