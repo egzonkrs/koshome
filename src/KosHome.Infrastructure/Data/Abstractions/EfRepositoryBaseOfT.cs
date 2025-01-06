@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using KosHome.Domain.Data.Abstractions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace KosHome.Infrastructure.Data.Abstractions;
 
@@ -15,7 +18,7 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
     where TEntity : DomainEntity, IEntity<TPrimaryKey>
 {
     private readonly DbSet<TEntity> _dbSet;
-    // private readonly IEnumerable<IQueryFilter> _queryFilters;
+    private readonly IEnumerable<IQueryFilter> _queryFilters;
 
     /// <summary>
     /// The Constructor.
@@ -24,50 +27,48 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
     protected EfRepositoryBase(DbContext dbContext)
     {
         _dbSet = dbContext.Set<TEntity>();
-        // _queryFilters = dbContext.GetService<QueryFiltersAccessor>()?.QueryFilters;
+        _queryFilters = dbContext.GetService<QueryFiltersAccessor>()?.QueryFilters;
     }
 
-    // /// <inheritdoc />
-    // public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity> specification = null,
-    //     CancellationToken cancellationToken = default)
-    // {
-    //     if (specification is null)
-    //     {
-    //         return await QueryFiltersInternal().ToListAsync(cancellationToken);
-    //     }
-    //
-    //     var dbSet = QueryFiltersInternal().Where(specification); // Check QueryableExtensions
-    //
-    //     if (specification.PageSize.HasValue)
-    //     {
-    //         return dbSet.Skip((int)(specification.PageNumber * specification.PageSize.Value))
-    //             .Take((int)specification.PageSize.Value);
-    //     }
-    //
-    //     return dbSet;
-    // }
+    /// <inheritdoc />
+    public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity> specification = null, CancellationToken cancellationToken = default)
+    {
+        if (specification is null)
+        {
+            return await QueryFiltersInternal().ToListAsync(cancellationToken);
+        }
+
+        var dbSet = QueryFiltersInternal().Where(specification); // Check QueryableExtensions
+
+        if (specification.PageSize.HasValue)
+        {
+            return dbSet
+                .Skip((int)(specification.PageNumber * specification.PageSize.Value))
+                .Take((int)specification.PageSize.Value);
+        }
+
+        return dbSet;
+    }
 
     /// <inheritdoc />
     public Task<TEntity> GetByIdAsync(TPrimaryKey id, CancellationToken cancellationToken = default)
     {
-        return _dbSet.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
-        // return QueryFiltersInternal().FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
+        return QueryFiltersInternal().FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
     }
 
-    // /// <inheritdoc />
-    // public async Task<bool> ExistsAsync(ISpecification<TEntity> specification = null,
-    //     CancellationToken cancellationToken = default)
-    // {
-    //     return specification is null
-    //         ? await QueryFiltersInternal().AnyAsync(cancellationToken)
-    //         : await QueryFiltersInternal().Where(specification).AnyAsync(cancellationToken);
-    // }
+    /// <inheritdoc />
+    public async Task<bool> ExistsAsync(ISpecification<TEntity> specification = null,
+        CancellationToken cancellationToken = default)
+    {
+        return specification is null
+            ? await QueryFiltersInternal().AnyAsync(cancellationToken)
+            : await QueryFiltersInternal().Where(specification).AnyAsync(cancellationToken);
+    }
 
     /// <inheritdoc />
     public Task<bool> ExistsAsync(TPrimaryKey id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-        // return QueryFiltersInternal().AnyAsync(x => x.Id.Equals(id), cancellationToken: cancellationToken);
+        return QueryFiltersInternal().AnyAsync(x => x.Id.Equals(id), cancellationToken: cancellationToken);
     }
 
     /// <inheritdoc />
@@ -89,17 +90,17 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
         return Task.FromResult(_dbSet.Remove(entity));
     }
 
-    // private IQueryable<TEntity> QueryFiltersInternal()
-    // {
-    //     if (_queryFilters is null) return _dbSet;
-    //
-    //     IQueryable<TEntity> dbSet = _dbSet;
-    //
-    //     foreach (var filter in _queryFilters)
-    //     {
-    //         dbSet = filter.HasQueryFilter(dbSet);
-    //     }
-    //
-    //     return dbSet;
-    // }
+    private IQueryable<TEntity> QueryFiltersInternal()
+    {
+        if (_queryFilters is null) return _dbSet;
+    
+        IQueryable<TEntity> dbSet = _dbSet;
+    
+        foreach (var filter in _queryFilters)
+        {
+            dbSet = filter.HasQueryFilter(dbSet);
+        }
+    
+        return dbSet;
+    }
 }

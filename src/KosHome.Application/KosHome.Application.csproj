@@ -14,5 +14,9 @@
     <ItemGroup>
         <ProjectReference Include="..\KosHome.Domain\KosHome.Domain.csproj"/>
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Apartments\GetApartment\" />
+    </ItemGroup>
 
 </Project>
