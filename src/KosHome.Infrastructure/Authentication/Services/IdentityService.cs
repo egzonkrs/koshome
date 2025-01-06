@@ -46,7 +46,7 @@ public sealed class IdentityService : IIdentityService
                 },
                 Attributes = identityUser.Attributes?.ToDictionary(
                     kvp => kvp.Key,
-                    kvp => kvp.Value?.AsEnumerable() ?? Enumerable.Empty<string>()
+                    kvp => kvp.Value?.AsEnumerable() ?? []
                 ),
             };
 

@@ -8,6 +8,7 @@
       <PackageReference Include="MediatR" />
       <PackageReference Include="FluentResults" />
       <PackageReference Include="Keycloak.Net" />
+      <PackageReference Include="Microsoft.AspNetCore.Http.Features" />
     </ItemGroup>
     
     <ItemGroup>

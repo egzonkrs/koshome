@@ -29,11 +29,15 @@ internal sealed class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(200)
             .HasConversion(firstName => firstName.Value, value => new LastName(value));
 
-        builder.Property(user => user.Email)
-            .HasMaxLength(400)
-            .HasConversion(email => email.Value, value => new Email(value));
+        builder.OwnsOne(x => x.Email, email =>
+        {
+            email.Property(e => e.Value)
+                .HasColumnName(nameof(Email))
+                .HasMaxLength(400);
+            
+            email.HasIndex(e => e.Value).IsUnique();
+        });
 
-        builder.HasIndex(user => user.Email).IsUnique();
         builder.HasIndex(user => user.IdentityId).IsUnique();
     }
 }
