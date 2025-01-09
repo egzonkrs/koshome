@@ -1,9 +1,11 @@
-using System.Collections.Generic;
+using MediatR;
+using System.Linq;
+using FluentResults;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentResults;
+using System.Collections.Generic;
+using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Apartments;
-using MediatR;
 
 namespace KosHome.Application.Apartments.GetApartments;
 
@@ -18,7 +20,7 @@ public class GetApartmentsQueryHandler : IRequestHandler<GetApartmentsQuery, Res
 
     public async Task<Result<List<Apartment>>> Handle(GetApartmentsQuery request, CancellationToken cancellationToken)
     {
-        var apartments = await _apartmentRepository.GetAllAsync(cancellationToken);
-        return Result.Ok(apartments);
+        var allApartments = await _apartmentRepository.GetAllAsync(cancellationToken: cancellationToken);
+        return Result.Ok(allApartments.ToList());
     }
 }

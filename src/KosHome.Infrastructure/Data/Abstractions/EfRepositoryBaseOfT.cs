@@ -33,21 +33,24 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
     /// <inheritdoc />
     public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity> specification = null, CancellationToken cancellationToken = default)
     {
-        if (specification is null)
-        {
-            return await QueryFiltersInternal().ToListAsync(cancellationToken);
-        }
-
-        var dbSet = QueryFiltersInternal().Where(specification); // Check QueryableExtensions
-
-        if (specification.PageSize.HasValue)
-        {
-            return dbSet
-                .Skip((int)(specification.PageNumber * specification.PageSize.Value))
-                .Take((int)specification.PageSize.Value);
-        }
-
-        return dbSet;
+        return await QueryFiltersInternal().ToListAsync(cancellationToken);
+        
+        // TODO: fix it
+        // if (specification is null) 
+        // {
+        //     return await QueryFiltersInternal().ToListAsync(cancellationToken);
+        // }
+        //
+        // var dbSet = QueryFiltersInternal().Where(specification); // Check QueryableExtensions
+        //
+        // if (specification.PageSize.HasValue)
+        // {
+        //     return dbSet
+        //         .Skip((int)(specification.PageNumber * specification.PageSize.Value))
+        //         .Take((int)specification.PageSize.Value);
+        // }
+        //
+        // return dbSet;
     }
 
     /// <inheritdoc />
@@ -60,9 +63,13 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
     public async Task<bool> ExistsAsync(ISpecification<TEntity> specification = null,
         CancellationToken cancellationToken = default)
     {
-        return specification is null
-            ? await QueryFiltersInternal().AnyAsync(cancellationToken)
-            : await QueryFiltersInternal().Where(specification).AnyAsync(cancellationToken);
+        if (specification is null)
+        {
+            return await QueryFiltersInternal().AnyAsync(cancellationToken);
+        }
+
+        throw new NotImplementedException();
+        // return await QueryFiltersInternal().Where(specification).AnyAsync(cancellationToken); // TODO: fix it
     }
 
     /// <inheritdoc />
