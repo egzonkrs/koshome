@@ -17,16 +17,38 @@ public sealed class AuthModule : IModule
     {
         _configuration = configuration;
     }
+
     public void Load(IServiceCollection services)
     {
-        // services
-        //     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //     .AddJwtBearer();
+        // // Configure Keycloak options from configuration and bind them to our KeycloakOptions record.
+        // var keycloakConfig = _configuration.GetSection("Keycloak");
+        // ArgumentNullException.ThrowIfNull(keycloakConfig, nameof(keycloakConfig));
+        // services.Configure<KeycloakOptions>(keycloakConfig);
         //
-        // var authenticationOptions = _configuration.GetSection(AuthenticationOptions.SectionName);
-        // ArgumentNullException.ThrowIfNull(authenticationOptions);
-        // services.Configure<AuthenticationOptions>(authenticationOptions);
-        
-        services.AddScoped<IIdentityService, IdentityService>();
+        // // Read the Keycloak options to ensure required properties are available.
+        // KeycloakOptions? keycloakOptions = keycloakConfig.Get<KeycloakOptions>();
+        // ArgumentNullException.ThrowIfNull(keycloakOptions, nameof(keycloakOptions));
+        //
+        // // Add authentication with JWT Bearer using Keycloak settings.
+        // services.AddAuthentication(options =>
+        // {
+        //     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        // })
+        // .AddJwtBearer(options =>
+        // {
+        //     options.Authority = keycloakOptions.Authority;
+        //     options.RequireHttpsMetadata = keycloakOptions.RequireHttpsMetadata;
+        //     options.Audience = keycloakOptions.Audience;
+        //
+        //     // Optional: Add additional JWT Bearer configuration like token validation parameters here.
+        //     // options.TokenValidationParameters = new TokenValidationParameters
+        //     // {
+        //     //     // Custom token validation configuration
+        //     // };
+        // });
+        //
+        // // Register the identity service.
+        // services.AddScoped<IIdentityService, IdentityService>();
     }
 }
