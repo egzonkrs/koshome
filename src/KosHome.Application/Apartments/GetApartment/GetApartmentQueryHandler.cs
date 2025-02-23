@@ -2,6 +2,7 @@ using MediatR;
 using FluentResults;
 using System.Threading;
 using System.Threading.Tasks;
+using KosHome.Domain.Common;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Apartments;
 
@@ -20,11 +21,8 @@ public class GetApartmentQueryHandler : IRequestHandler<GetApartmentQuery, Resul
     {
         var apartment = await _apartmentRepository.GetByIdAsync(request.Id, cancellationToken);
 
-        if (apartment is null)
-        {
-            return Result.Fail<Apartment>($"Apartment with id: {request.Id} not found.");
-        }
-
-        return Result.Ok(apartment);
+        return apartment is null 
+            ? Result.Fail<Apartment>(ApartmentsErrors.NotFound(request.Id.ToString())) 
+            : Result.Ok(apartment);
     }
 } 
