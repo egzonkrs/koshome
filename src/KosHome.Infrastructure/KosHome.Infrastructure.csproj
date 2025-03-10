@@ -14,7 +14,8 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         
-        <PackageReference Include="Keycloak.Net" />
+        <PackageReference Include="Keycloak.Net.Core" />
+        <PackageReference Include="FluentResults" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>

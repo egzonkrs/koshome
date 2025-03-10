@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddModule(new CoreModule());
 builder.Services.AddModule(new DataModule(builder.Configuration));
-builder.Services.AddModule(new AuthModule(builder.Configuration));
+// builder.Services.AddModule(new AuthModule(builder.Configuration));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

@@ -1,3 +1,4 @@
+using System;
 using FluentResults;
 
 namespace KosHome.Domain.Common;
@@ -54,8 +55,8 @@ public static class UsersErrors
     /// <summary>
     /// Returns an error indicating that the specified identity user is invalid.
     /// </summary>
-    public static Error IdentityUserInvalid
-        => new CustomFluentError("IDENTITY_USER_INVALID", "The specified identity user is invalid.");
+    public static Error IdentityUserInvalid => 
+        new CustomFluentError("IDENTITY_USER_INVALID", "The identity user is invalid.");
 
     /// <summary>
     /// Returns an error indicating that the specified identity user was not found.

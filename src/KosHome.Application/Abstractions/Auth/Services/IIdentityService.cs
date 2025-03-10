@@ -1,7 +1,7 @@
 using System;
-using FluentResults;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentResults;
 using KosHome.Domain.Entities.Users;
 
 namespace KosHome.Application.Abstractions.Auth.Services;
@@ -12,10 +12,10 @@ namespace KosHome.Application.Abstractions.Auth.Services;
 public interface IIdentityService
 {
     /// <summary>
-    /// Register a new identity user using the provided <paramref name="identityUser"/>.
+    /// Registers a new identity user in the authentication system and assigns a role to the user.
     /// </summary>
     /// <param name="identityUser">The <see cref="IdentityUser"/>.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
-    /// <returns></returns>
-    Task<Result<Guid>> RegisterIdentityUserAsync(IdentityUser identityUser, CancellationToken cancellationToken = default);
+    /// <returns>The unique identifier of the registered user.</returns>
+    Task<Result<Guid>> CreateIdentityUserAndAssignRoleAsync(IdentityUser identityUser, CancellationToken cancellationToken = default);
 }

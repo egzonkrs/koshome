@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using KosHome.Domain.Abstractions;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Cities;

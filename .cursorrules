@@ -24,6 +24,8 @@
 - Make types internal and sealed by default unless otherwise specified
 - Prefer Ulid-s for identifiers unless otherwise specified
 - Use `is null` checks instead of `== null`. The same goes for `is not null` and `!= null`.
+- Use uppercase error codes like `IDENTITY_ROLE_NOT_FOUND` for error codes in the application.
+- Use `CustomFluentError` inside ErrorCodes.cs files for custom error codes for example `new CustomFluentError("IDENTITY_USER_INVALID", "The identity user is invalid.");`
 - Use proper naming conventions for variables, methods, classes, etc
 - Use proper naming conventions for boolean variables and methods add `Is`, "is" or "has" prefix
 - Use `_` as a prefix for private fields
@@ -33,6 +35,7 @@
 - Use `ArgumentNullException.ThrowIfNull` to throw an exception if the argument is null
 - Use Domain driven design principles
 - Use `Result` type for return values from methods of FluentResult
+- Use `Result` type pattern for error handling instead of exceptions
 - Use files named `*ErrorCodes.cs` for error codes that are used in the application when returning `Result` from methods of FluentResult
 - Check if the error code is already defined in the file `*ErrorCodes.cs` before adding a new one
 - Do not use new error codes without adding them to the file `*ErrorCodes.cs`
