@@ -26,10 +26,11 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
             return;
         }
 
-        options.Authority = _authOptions.Authority;
-        options.Audience = _authOptions.Audience;
-        options.RequireHttpsMetadata = _authOptions.RequireHttpsMetadata;
-        options.MetadataAddress = _authOptions.MetadataUrl;
+        // Use nested Keycloak configuration values.
+        options.Authority = _authOptions.Keycloak.Authority;
+        options.Audience = _authOptions.Keycloak.Audience;
+        options.RequireHttpsMetadata = _authOptions.Keycloak.RequireHttpsMetadata;
+        options.MetadataAddress = _authOptions.Keycloak.MetadataUrl;
         
         if (_authOptions.UseCookies)
         {
@@ -37,7 +38,6 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
             {
                 OnMessageReceived = context =>
                 {
-                    // Extract the token from the cookie
                     if (context.Request.Cookies.TryGetValue(_authOptions.Cookie.Name, out var token))
                     {
                         context.Token = token;
@@ -49,10 +49,10 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
         
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = !string.IsNullOrEmpty(_authOptions.Issuer),
-            ValidIssuer = _authOptions.Issuer,
-            ValidateAudience = !string.IsNullOrEmpty(_authOptions.Audience),
-            ValidAudience = _authOptions.Audience,
+            ValidateIssuer = !string.IsNullOrEmpty(_authOptions.Keycloak.Issuer),
+            ValidIssuer = _authOptions.Keycloak.Issuer,
+            ValidateAudience = !string.IsNullOrEmpty(_authOptions.Keycloak.Audience),
+            ValidAudience = _authOptions.Keycloak.Audience,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromMinutes(1)
         };

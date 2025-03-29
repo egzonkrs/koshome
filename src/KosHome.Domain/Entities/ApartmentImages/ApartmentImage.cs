@@ -26,7 +26,7 @@ public sealed class ApartmentImage : DomainEntity, IEntity<Ulid>
 
     private ApartmentImage()
     {
-    }
+    } 
 
     /// <summary>
     /// The unique identifier of the apartment image.

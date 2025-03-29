@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Keycloak.Net;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using Keycloak.Net.Models.Roles;
 using KosHome.Application.Abstractions.Auth.Services;
 using KosHome.Domain.Entities.Users;
+using KosHome.Infrastructure.Authentication.Models;
 using KeycloakUser = Keycloak.Net.Models.Users.User;
 
 namespace KosHome.Infrastructure.Authentication.Services;
@@ -31,7 +33,8 @@ public sealed class KeycloakClientWrapper : IKeycloakIdentityService
 
     public async Task<Result<IEnumerable<Role>>> GetRolesAsync(string realm, CancellationToken cancellationToken = default)
     {
-        return await _keycloakClient.GetRolesAsync(, cancellationToken);
+        var keycloakRoles = await _keycloakClient.GetRolesAsync(realm, first: null, max: null, search: null, briefRepresentation: null, cancellationToken);
+        return Result.Ok(keycloakRoles);
     }
 
     public async Task<Result<bool>> AddRealmRoleMappingsToUserAsync(string realm, string userId, IEnumerable<Role> roles, CancellationToken cancellationToken = default)
@@ -52,12 +55,7 @@ public sealed class KeycloakClientWrapper : IKeycloakIdentityService
             Id = role.Id,
             Name = role.Name,
             Description = role.Description,
-            Attributes = role.Attributes
+            // Attributes = role.Attributes // TODO: map the attributes
         });
-    }
-    
-    public async Task<Result<IEnumerable<Role>>> GetUserRolesAsync(string realm, string userId, CancellationToken cancellationToken = default)
-    {
-        return await _keycloakClient.GetUserRolesAsync(realm, userId, cancellationToken);
     }
 } 

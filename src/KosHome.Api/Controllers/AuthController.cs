@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
+using KosHome.Application.Users.Register;
+using KosHome.Domain.Entities.Users;
 using KosHome.Infrastructure.Authentication;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,105 +18,54 @@ namespace KosHome.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly HttpClient _httpClient;
     private readonly AuthenticationOptions _authOptions;
+    private readonly IMediator _mediator;
 
     public AuthController(
-        HttpClient httpClient,
-        IOptions<AuthenticationOptions> authOptions)
+        IOptions<AuthenticationOptions> authOptions,
+        IMediator mediator)
     {
-        _httpClient = httpClient;
         _authOptions = authOptions.Value;
+        _mediator = mediator;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)
     {
-        try
+        // Create identity user object
+        var identityUser = new IdentityUser
         {
-            // Prepare the token request to Keycloak
-            var tokenRequest = new Dictionary<string, string>
-            {
-                ["grant_type"] = "password",
-                ["client_id"] = _authOptions.ClientId,
-                ["client_secret"] = _authOptions.ClientSecret,
-                ["username"] = request.Email,
-                ["password"] = request.Password
-            };
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            Password = request.Password,
+            IsEnabled = true,
+            IsEmailVerified = false
+        };
 
-            // Get the token from Keycloak
-            var tokenEndpoint = $"{_authOptions.Authority}/realms/{_authOptions.Realm}/protocol/openid-connect/token";
-            var response = await _httpClient.PostAsync(
-                tokenEndpoint,
-                new FormUrlEncodedContent(tokenRequest));
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return Unauthorized(new { Message = "Invalid credentials" });
-            }
-
-            var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
-            
-            if (tokenResponse == null)
-            {
-                return StatusCode(500, new { Message = "Failed to process authentication response" });
-            }
-
-            // Set the JWT token as a cookie
-            if (_authOptions.UseCookies)
-            {
-                Response.Cookies.Append(
-                    _authOptions.Cookie.Name,
-                    tokenResponse.AccessToken,
-                    new CookieOptions
-                    {
-                        HttpOnly = _authOptions.Cookie.HttpOnly,
-                        Secure = _authOptions.Cookie.SecureOnly,
-                        SameSite = _authOptions.Cookie.SameSite switch
-                        {
-                            "Strict" => SameSiteMode.Strict,
-                            "Lax" => SameSiteMode.Lax,
-                            "None" => SameSiteMode.None,
-                            _ => SameSiteMode.Strict
-                        },
-                        Expires = DateTimeOffset.Now.AddMinutes(_authOptions.Cookie.ExpirationMinutes)
-                    });
-                
-                // Don't return the token in the response body when using cookies
-                return Ok(new { Message = "Login successful" });
-            }
-
-            // If not using cookies, return the token in the response
-            return Ok(new { Token = tokenResponse.AccessToken });
-        }
-        catch (Exception ex)
+        // Create and send the command
+        var command = new RegisterUserCommand
         {
-            return StatusCode(500, new { Message = $"An error occurred: {ex.Message}" });
+            IdentityUser = identityUser,
+            RoleName = "user",
+            RealmId = _authOptions.Keycloak.Realm
+        };
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailed)
+        {
+            return BadRequest(new { Errors = result.Errors });
         }
+
+        return Ok(new { UserId = result.Value });
     }
 
-    [HttpPost("logout")]
-    public IActionResult Logout()
+    public class RegisterRequest
     {
-        if (_authOptions.UseCookies)
-        {
-            Response.Cookies.Delete(_authOptions.Cookie.Name);
-        }
-        
-        return Ok(new { Message = "Logged out successfully" });
-    }
-
-    public class LoginRequest
-    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-    }
-
-    private class TokenResponse
-    {
-        public string AccessToken { get; set; } = string.Empty;
-        public string RefreshToken { get; set; } = string.Empty;
-        public int ExpiresIn { get; set; }
-        public string TokenType { get; set; } = string.Empty;
     }
 } 

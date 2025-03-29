@@ -27,7 +27,7 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
     protected EfRepositoryBase(DbContext dbContext)
     {
         _dbSet = dbContext.Set<TEntity>();
-        _queryFilters = dbContext.GetService<QueryFiltersAccessor>()?.QueryFilters;
+        // _queryFilters = dbContext.GetService<QueryFiltersAccessor>()?.QueryFilters;
     }
 
     /// <inheritdoc />

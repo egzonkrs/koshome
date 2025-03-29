@@ -32,5 +32,8 @@ public sealed class DataModule : IModule
         
         services.AddEfCoreUnitOfWork<ApplicationDbContext>();
         services.AddEfCoreRepository<City, ICityRepository, CityRepository>();
+        
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IApartmentRepository, ApartmentRepository>();
     }
 }

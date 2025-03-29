@@ -4,23 +4,13 @@ public sealed class AuthenticationOptions
 {
     public const string SectionName = "Authentication";
     
-    public string Audience { get; init; } = string.Empty;
-    public string MetadataUrl { get; init; } = string.Empty;
-    public string Issuer { get; init; } = string.Empty;
-    public bool RequireHttpsMetadata { get; init; } = true;
-    
-    // Keycloak specific settings
-    public string Authority { get; init; } = string.Empty;
-    public string Realm { get; init; } = "koshome";
-    public string AdminUsername { get; init; } = string.Empty;
-    public string AdminPassword { get; init; } = string.Empty;
-    public string ClientId { get; init; } = string.Empty;
-    public string ClientSecret { get; init; } = string.Empty;
-    
-    // Cookie settings
+    // Nest Keycloak settings under "Keycloak"
+    public KeycloakOptions Keycloak { get; init; } = new();
+
+    // Other authentication settings (e.g., cookie settings)
     public bool UseCookies { get; init; } = true;
     public CookieSettings Cookie { get; init; } = new();
-    
+
     public sealed class CookieSettings
     {
         public string Name { get; init; } = "koshome_auth";

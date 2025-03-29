@@ -18,4 +18,6 @@ public interface IIdentityService
     /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
     /// <returns>The unique identifier of the registered user.</returns>
     Task<Result<Guid>> CreateIdentityUserAndAssignRoleAsync(IdentityUser identityUser, CancellationToken cancellationToken = default);
+    
+    // Task<Result<TokenResponse>> LoginAsync(string realm, string username, string password, CancellationToken cancellationToken = default);
 }

@@ -8,7 +8,6 @@ using KosHome.Domain.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
 
 namespace KosHome.Infrastructure.Images.Services;
 
@@ -67,7 +66,7 @@ public sealed class FileUploaderService : IFileUploaderService
             _logger.LogInformation("Starting file upload: {FileName}", fileName);
 
             // Load the file with ImageSharp to confirm it's a valid image
-            using (var image = Image.Load(file.OpenReadStream(), out _))
+            using (var image = await Image.LoadAsync(file.OpenReadStream()))
             {
                 await image.SaveAsync(fullPath);
             }

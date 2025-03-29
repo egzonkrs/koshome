@@ -52,13 +52,4 @@ public interface IKeycloakIdentityService
     /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
     /// <returns>The role if found, or an error if not found.</returns>
     Task<Result<Role>> GetRoleByNameAsync(string realm, string roleName, CancellationToken cancellationToken = default);
-    
-    /// <summary>
-    /// Gets the roles assigned to a user in the specified realm.
-    /// </summary>
-    /// <param name="realm">The realm where the user exists.</param>
-    /// <param name="userId">The ID of the user.</param>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
-    /// <returns>A collection of roles assigned to the user.</returns>
-    Task<Result<IEnumerable<Role>>> GetUserRolesAsync(string realm, string userId, CancellationToken cancellationToken = default);
 }
