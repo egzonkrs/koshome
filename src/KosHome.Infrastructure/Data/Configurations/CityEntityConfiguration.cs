@@ -5,7 +5,7 @@ using KosHome.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KosHome.Infrastructure.Configurations;
+namespace KosHome.Infrastructure.Data.Configurations;
 
 internal sealed class CityConfiguration : IEntityTypeConfiguration<City>
 {

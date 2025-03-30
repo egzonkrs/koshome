@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace KosHome.Infrastructure.Authentication;
+namespace KosHome.Infrastructure.Configurations;
 
 public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
 {

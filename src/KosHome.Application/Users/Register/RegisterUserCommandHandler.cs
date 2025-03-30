@@ -4,6 +4,7 @@ using FluentResults;
 using System.Threading;
 using System.Threading.Tasks;
 using KosHome.Application.Abstractions.Auth.Services;
+using KosHome.Domain.Common;
 using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Users;
@@ -13,13 +14,13 @@ namespace KosHome.Application.Users.Register;
 
 public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Result<Guid>>
 {
-    private readonly IIdentityService _identityService;
+    private readonly IKeycloakIdentityService _keycloakIdentityService;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public RegisterUserCommandHandler(IIdentityService identityService, IUserRepository userRepository, IUnitOfWork unitOfWork)
+    public RegisterUserCommandHandler(IKeycloakIdentityService keycloakIdentityService, IUserRepository userRepository, IUnitOfWork unitOfWork)
     {
-        _identityService = identityService;
+        _keycloakIdentityService = keycloakIdentityService;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
     }
@@ -32,14 +33,13 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
             new Email(request.IdentityUser.Email)
         );
         
-        var keycloakIdentityId = await _identityService.CreateIdentityUserAndAssignRoleAsync(request.IdentityUser, cancellationToken);
-        
-        if (keycloakIdentityId.IsFailed)
+        var keycloakIdentityResult = await _keycloakIdentityService.CreateIdentityUserAndAssignRoleAsync(request.IdentityUser, cancellationToken);
+        if (keycloakIdentityResult.IsFailed)
         {
-            return keycloakIdentityId;
+            return Result.Fail(keycloakIdentityResult.Errors);
         }
         
-        user.SetIdentityId(keycloakIdentityId.Value.ToString());
+        user.SetIdentityId(keycloakIdentityResult.Value.ToString());
 
         await _unitOfWork.ExecuteTransactionAsync(async x =>
         {
@@ -49,7 +49,6 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
         });
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return keycloakIdentityId;
+        return keycloakIdentityResult;
     }
 }

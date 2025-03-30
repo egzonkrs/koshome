@@ -1,12 +1,12 @@
 using KosHome.Domain.Entities.ApartmentImages;
-using Microsoft.EntityFrameworkCore;
 using KosHome.Domain.Entities.Apartments;
 using KosHome.Domain.Entities.Cities;
 using KosHome.Domain.Entities.Users;
 using KosHome.Infrastructure.Converters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KosHome.Infrastructure.Configurations;
+namespace KosHome.Infrastructure.Data.Configurations;
 
 internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartment>
 {

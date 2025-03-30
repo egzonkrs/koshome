@@ -4,53 +4,53 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentResults;
-using Keycloak.Net.Models.Roles;
 using KosHome.Domain.Common;
 using Microsoft.Extensions.Logging;
 using KosHome.Domain.Entities.Users;
 using KosHome.Application.Abstractions.Auth.Services;
+using KosHome.Infrastructure.Authentication.Abstractions;
+using KosHome.Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
 using KeycloakUser = Keycloak.Net.Models.Users.User;
 
 namespace KosHome.Infrastructure.Authentication.Services;
 
-public sealed class KeycloakIdentityService : IIdentityService
+public sealed class KeycloakIdentityService : IKeycloakIdentityService
 {
-    private readonly IKeycloakIdentityService _keycloakWrapper;
+    private readonly IKeycloakClientWrapper _keycloakWrapper;
     private readonly ILogger<KeycloakIdentityService> _logger;
+    private readonly IOptions<AuthenticationOptions> _authOptions;
+    private readonly IKeycloakAuthApi _keycloakAuthApi;
     private readonly string _realmName;
-    private readonly AuthenticationOptions _authOptions;
 
     public KeycloakIdentityService(
-        IKeycloakIdentityService keycloakWrapper, 
+        IKeycloakClientWrapper keycloakWrapper,
         ILogger<KeycloakIdentityService> logger,
-        IOptions<AuthenticationOptions> authOptions)
+        IOptions<AuthenticationOptions> authOptions, 
+        IKeycloakAuthApi keycloakAuthApi)
     {
-        _keycloakWrapper = keycloakWrapper;
         _logger = logger;
-        _authOptions = authOptions.Value;
-        _realmName = _authOptions.Keycloak.Realm;
+        _authOptions = authOptions;
+        _keycloakWrapper = keycloakWrapper;
+        _keycloakAuthApi = keycloakAuthApi;
+        _realmName = authOptions.Value.Keycloak.Realm;
     }
     
     public async Task<Result<Guid>> CreateIdentityUserAndAssignRoleAsync(IdentityUser identityUser, CancellationToken cancellationToken = default)
     {
-        if (identityUser is null)
-        {
-            return Result.Fail(UsersErrors.IdentityUserInvalid);
-        }
-
         try
         {
+            if (identityUser is null)
+            {
+                return Result.Fail(UsersErrors.IdentityUserInvalid);
+            }
+            
             var keycloakUser = MapToKeycloakUser(identityUser);
 
-            var createUserResult = await _keycloakWrapper.CreateAndRetrieveUserIdAsync(
-                _realmName, 
-                keycloakUser, 
-                cancellationToken);
-
+            var createUserResult = await _keycloakWrapper.CreateAndRetrieveUserIdAsync(_realmName, keycloakUser, cancellationToken);
             if (createUserResult.IsFailed)
             {
-                _logger.LogError("Failed to create identity user with Email {Email}", identityUser.Email);
+                _logger.LogError("Failed to create identity user with Email: {Email}", identityUser.Email);
                 return Result.Fail(UsersErrors.IdentityUserInvalid);
             }
 
@@ -80,9 +80,31 @@ public sealed class KeycloakIdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create identity user with email {Email}: {Message}", 
-                identityUser.Email, ex.Message);
+            _logger.LogError(ex, "Failed to create identity user with email {Email}: {Message}", identityUser?.Email, ex.Message);
             return Result.Fail(UsersErrors.UnexpectedError());
+        }
+    }
+    
+    public async Task<Result<string>> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var parameters = new Dictionary<string, string>
+            {
+                { "grant_type", "password" },
+                { "client_id", _authOptions.Value.Keycloak.ClientId },
+                { "client_secret", _authOptions.Value.Keycloak.ClientSecret },
+                { "username", username },
+                { "password", password }
+            };
+
+            var tokenResponse = await _keycloakAuthApi.LoginAsync(_realmName, parameters);
+            return Result.Ok(tokenResponse.AccessToken);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, "Failed to login user {username}", username);
+            return Result.Fail<string>(UsersErrors.UnexpectedError());
         }
     }
     

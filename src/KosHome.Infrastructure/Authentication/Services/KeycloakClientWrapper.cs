@@ -16,7 +16,7 @@ namespace KosHome.Infrastructure.Authentication.Services;
 /// <summary>
 /// A wrapper around the <see cref="KeycloakClient"/> to provide the functionality to manage identity users of the Keycloak.
 /// </summary>
-public sealed class KeycloakClientWrapper : IKeycloakIdentityService
+public sealed class KeycloakClientWrapper : IKeycloakClientWrapper
 {
     private readonly KeycloakClient _keycloakClient;
 
@@ -25,7 +25,6 @@ public sealed class KeycloakClientWrapper : IKeycloakIdentityService
         _keycloakClient = keycloakClient;
     }
     
-    /// <inheritdoc />
     public async Task<Result<string>> CreateAndRetrieveUserIdAsync(string realm, KeycloakUser keycloakUser, CancellationToken cancellationToken = default)
     {
         return await _keycloakClient.CreateAndRetrieveUserIdAsync(realm, keycloakUser, cancellationToken);
@@ -47,15 +46,8 @@ public sealed class KeycloakClientWrapper : IKeycloakIdentityService
         return await _keycloakClient.GetRoleByNameAsync(realm, roleName, cancellationToken);
     }
 
-    public async Task<IEnumerable<IdentityRole>> GetRolesAsync(string realm, int? first = null, int? max = null, string? search = null, bool? briefRepresentation = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Role>> GetRolesAsync(string realm, int? first = null, int? max = null, string? search = null, bool? briefRepresentation = null, CancellationToken cancellationToken = default)
     {
-        var roles = await _keycloakClient.GetRolesAsync(realm, first, max, search, briefRepresentation, cancellationToken);
-        return roles.Select(role => new IdentityRole
-        {
-            Id = role.Id,
-            Name = role.Name,
-            Description = role.Description,
-            // Attributes = role.Attributes // TODO: map the attributes
-        });
+        return await _keycloakClient.GetRolesAsync(realm, first, max, search, briefRepresentation, cancellationToken);
     }
 } 

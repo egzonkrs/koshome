@@ -1,4 +1,4 @@
-namespace KosHome.Infrastructure.Authentication;
+namespace KosHome.Infrastructure.Configurations;
 
 public sealed class KeycloakOptions
 {

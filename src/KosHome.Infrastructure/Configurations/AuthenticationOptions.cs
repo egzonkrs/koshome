@@ -1,4 +1,6 @@
-namespace KosHome.Infrastructure.Authentication;
+using KosHome.Infrastructure.Authentication;
+
+namespace KosHome.Infrastructure.Configurations;
 
 public sealed class AuthenticationOptions
 {
