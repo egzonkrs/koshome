@@ -65,6 +65,6 @@ public class IdentityUsersController : ControllerBase
         {
             return Unauthorized(new { Errors = result.Errors });
         }
-        return Ok(new { AccessToken = result.Value });
+        return Ok(result);
     }
 } 

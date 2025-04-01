@@ -103,8 +103,8 @@ public sealed class KeycloakIdentityService : IKeycloakIdentityService
         }
         catch(Exception ex)
         {
-            _logger.LogError(ex, "Failed to login user {username}", username);
-            return Result.Fail<string>(UsersErrors.UnexpectedError());
+            _logger.LogError(ex, "Failed to login user {username} with Exception Message: {ExMessage}", username, ex.Message);
+            return Result.Fail(UsersErrors.UnexpectedError());
         }
     }
     

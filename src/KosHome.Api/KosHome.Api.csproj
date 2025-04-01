@@ -13,8 +13,4 @@
         <ProjectReference Include="..\KosHome.Infrastructure\KosHome.Infrastructure.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\Responses\" />
-    </ItemGroup>
-
 </Project>

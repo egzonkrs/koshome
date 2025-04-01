@@ -11,7 +11,7 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
 
     public JwtBearerOptionsSetup(IOptions<AuthenticationOptions> authOptions)
     {
-        _authOptions = authOptions.Value;
+        _authOptions = authOptions.Value ?? throw new ArgumentNullException(nameof(authOptions), "Authentication options cannot be null");
     }
 
     public void Configure(JwtBearerOptions options)
@@ -21,16 +21,15 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
 
     public void Configure(string? name, JwtBearerOptions options)
     {
-        if (name != JwtBearerDefaults.AuthenticationScheme)
+        if (name is null or not JwtBearerDefaults.AuthenticationScheme)
         {
             return;
         }
 
-        // Use nested Keycloak configuration values.
         options.Authority = _authOptions.Keycloak.Authority;
         options.Audience = _authOptions.Keycloak.Audience;
-        options.RequireHttpsMetadata = _authOptions.Keycloak.RequireHttpsMetadata;
         options.MetadataAddress = _authOptions.Keycloak.MetadataUrl;
+        options.RequireHttpsMetadata = _authOptions.Keycloak.RequireHttpsMetadata;
         
         if (_authOptions.UseCookies)
         {
@@ -54,7 +53,7 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
             ValidateAudience = !string.IsNullOrEmpty(_authOptions.Keycloak.Audience),
             ValidAudience = _authOptions.Keycloak.Audience,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(1)
+            ClockSkew = TimeSpan.Zero
         };
     }
 }
