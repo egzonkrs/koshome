@@ -38,7 +38,6 @@ public sealed class AuthModule : IModule
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer();
 
-
         services.AddSingleton(_ => new KeycloakClient(keycloakOptions.Authority, keycloakOptions.ClientSecret, new Keycloak.Net.KeycloakOptions(
                 authenticationRealm: keycloakOptions.Realm, 
                 adminClientId: keycloakOptions.ClientId)

@@ -5,7 +5,7 @@ using KosHome.Domain.Entities.Cities;
 
 namespace KosHome.Application.Cities.GetCities;
 
-public sealed class GetCityById : IRequest<Result<City>>
+public sealed class GetCityById : IRequest<Result<CityResponse>>
 {
     /// <summary>
     /// The Id of the City.

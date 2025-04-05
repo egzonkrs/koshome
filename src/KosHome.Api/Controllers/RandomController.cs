@@ -24,6 +24,17 @@ public class RandomController : ControllerBase
     public async Task<IActionResult> Get([FromQuery]Ulid cityId, CancellationToken cancellationToken = default)
     {
         var result = await _mediator.Send(new GetCityById { CityId = cityId }, cancellationToken);
-        return Ok(result);
+        var qwe = result.ValueOrDefault;
+
+        try
+        {
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return Ok(result.ToResult());
+        }
+        
+        return Ok(result.ToResult());
     }
 }

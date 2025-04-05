@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using KosHome.Application.Users.Login;
 using KosHome.Application.Users.Register;
 using KosHome.Domain.Entities.Users;
-using KosHome.Infrastructure.Authentication;
 using KosHome.Infrastructure.Configurations;
 using MediatR;
 using Microsoft.AspNetCore.Identity.Data;
