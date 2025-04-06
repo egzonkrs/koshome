@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentResults;
 using KosHome.Application.Mappers;
+using KosHome.Domain.Common;
 using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Data.Repositories;
 using MediatR;
@@ -22,7 +23,9 @@ public class GetCitiesQueryHandler : IRequestHandler<GetCityById, Result<CityRes
     public async Task<Result<CityResponse>> Handle(GetCityById request, CancellationToken cancellationToken)
     {
         var city = await _cityRepository.GetByIdAsync(request.CityId, cancellationToken);
-        return Result.Fail("Asd");
-        return Result.Ok(city.ToResponse());
+        
+        return city is null 
+            ? Result.Fail(CitiesErrors.NotFound(id: request.CityId.ToString())).WithError(CitiesErrors.UnexpectedError())
+            : Result.Ok(city.ToResponse());
     }
 }

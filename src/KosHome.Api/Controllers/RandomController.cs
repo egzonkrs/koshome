@@ -2,6 +2,8 @@ using System;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentResults;
+using KosHome.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using KosHome.Application.Cities.GetCities;
 using Microsoft.AspNetCore.Authorization;
@@ -24,17 +26,6 @@ public class RandomController : ControllerBase
     public async Task<IActionResult> Get([FromQuery]Ulid cityId, CancellationToken cancellationToken = default)
     {
         var result = await _mediator.Send(new GetCityById { CityId = cityId }, cancellationToken);
-        var qwe = result.ValueOrDefault;
-
-        try
-        {
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return Ok(result.ToResult());
-        }
-        
-        return Ok(result.ToResult());
+        return this.ToActionResult(result);
     }
 }

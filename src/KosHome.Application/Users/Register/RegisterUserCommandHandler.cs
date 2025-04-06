@@ -27,18 +27,18 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
 
     public async Task<Result<Guid>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var user = User.Create(
-            new FirstName(request.IdentityUser.FirstName),
-            new LastName(request.IdentityUser.LastName),
-            new Email(request.IdentityUser.Email)
-        );
-        
         var keycloakIdentityResult = await _keycloakIdentityService.CreateIdentityUserAndAssignRoleAsync(request.IdentityUser, cancellationToken);
         if (keycloakIdentityResult.IsFailed)
         {
             return Result.Fail(keycloakIdentityResult.Errors);
         }
         
+        var user = User.Create(
+            new FirstName(request.IdentityUser.FirstName),
+            new LastName(request.IdentityUser.LastName),
+            new Email(request.IdentityUser.Email)
+        );
+
         user.SetIdentityId(keycloakIdentityResult.Value.ToString());
 
         await _unitOfWork.ExecuteTransactionAsync(async x =>
