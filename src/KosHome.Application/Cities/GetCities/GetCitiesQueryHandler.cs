@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentResults;
@@ -23,7 +24,7 @@ public class GetCitiesQueryHandler : IRequestHandler<GetCityById, Result<CityRes
     public async Task<Result<CityResponse>> Handle(GetCityById request, CancellationToken cancellationToken)
     {
         var city = await _cityRepository.GetByIdAsync(request.CityId, cancellationToken);
-        
+        throw new Exception();
         return city is null 
             ? Result.Fail(CitiesErrors.NotFound(id: request.CityId.ToString())).WithError(CitiesErrors.UnexpectedError())
             : Result.Ok(city.ToResponse());

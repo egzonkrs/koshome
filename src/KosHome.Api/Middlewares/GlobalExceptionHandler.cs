@@ -14,24 +14,41 @@ namespace KosHome.Api.Middlewares;
 internal sealed class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger;
+    private readonly IProblemDetailsService _problemDetailsService;
 
-    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IProblemDetailsService problemDetailsService)
     {
         _logger = logger;
+        _problemDetailsService = problemDetailsService;
     }
 
-    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exceptionThrew, CancellationToken cancellationToken)
     {
-        _logger.LogError(exception, "Exception occurred: {Message}", exception.Message);
+        _logger.LogError(exceptionThrew, "Exception occurred: {Message}", exceptionThrew.Message);
+
+        var httpResponseStatus = exceptionThrew switch
+        {
+            ArgumentException => StatusCodes.Status400BadRequest,
+            _ => StatusCodes.Status500InternalServerError
+        };
+        
+        httpContext.Response.StatusCode = httpResponseStatus;
 
         var problemDetails = new ProblemDetails
         {
-            Status = StatusCodes.Status500InternalServerError,
-            Title = "Server error"
+            Status = httpResponseStatus,
+            Title = "An error occurred",
+            Type = exceptionThrew.GetType().Name,
+            Detail = exceptionThrew.Message
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;
-        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
-        return true;
+        
+        return await _problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+        {
+            Exception = exceptionThrew,
+            HttpContext = httpContext,
+            ProblemDetails = problemDetails
+        });
     }
 }

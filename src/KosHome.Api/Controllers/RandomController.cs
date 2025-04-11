@@ -12,7 +12,7 @@ namespace KosHome.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+// [Authorize]
 public class RandomController : ControllerBase
 {
     private readonly IMediator _mediator;
