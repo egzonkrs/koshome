@@ -3,6 +3,7 @@ using Asp.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using KosHome.Api.Extensions;
+using KosHome.Api.Filters;
 using KosHome.Application.Abstractions.Auth.Constants;
 using Microsoft.AspNetCore.Mvc;
 using KosHome.Application.Users.Login;
@@ -46,6 +47,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [ServiceFilter(typeof(JwtCookieResultFilter))]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
         var loginResult = await _mediator.Send(new LoginUserCommand(request.Email, request.Password), cancellationToken);

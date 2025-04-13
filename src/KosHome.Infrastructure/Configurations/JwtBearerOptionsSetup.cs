@@ -31,16 +31,17 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
         options.MetadataAddress = _authOptions.Keycloak.MetadataUrl;
         options.RequireHttpsMetadata = _authOptions.Keycloak.RequireHttpsMetadata;
         
-        if (_authOptions.UseCookies)
+        if (_authOptions.Cookies.UseCookies)
         {
             options.Events = new JwtBearerEvents
             {
                 OnMessageReceived = context =>
                 {
-                    if (context.Request.Cookies.TryGetValue(_authOptions.Cookie.Name, out var token))
+                    if (context.Request.Cookies.TryGetValue(_authOptions.Cookies.Name, out var token))
                     {
                         context.Token = token;
                     }
+                    
                     return System.Threading.Tasks.Task.CompletedTask;
                 }
             };
@@ -53,7 +54,8 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
             ValidateAudience = !string.IsNullOrEmpty(_authOptions.Keycloak.Audience),
             ValidAudience = _authOptions.Keycloak.Audience,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuerSigningKey = true,
         };
     }
 }

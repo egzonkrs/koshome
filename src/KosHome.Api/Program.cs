@@ -1,8 +1,8 @@
-using KosHome.Api.Extensions;
-using KosHome.Api.Middlewares;
 using KosHome.Api.Modules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
+using KosHome.Api.Extensions.DependencyInjection;
+using KosHome.Api.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);

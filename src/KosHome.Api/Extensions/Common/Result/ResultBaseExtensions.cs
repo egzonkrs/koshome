@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentResults;
 
-namespace KosHome.Api.Extensions;
+namespace KosHome.Api.Extensions.Common.Result;
 
 
 /// <summary>

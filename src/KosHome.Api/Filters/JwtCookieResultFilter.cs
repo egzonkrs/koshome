@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using KosHome.Api.Models;
 using KosHome.Application.Users.Login;
 using KosHome.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +24,7 @@ public class JwtCookieResultFilter : IAsyncResultFilter
 
     public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (context.Result is OkObjectResult okResult && okResult.Value is LoginResponse response)
+        if (context.Result is ObjectResult { Value: ApiResponse<LoginResponse> response })
         {
             var cookieOptions = new CookieOptions
             {
@@ -33,7 +34,8 @@ public class JwtCookieResultFilter : IAsyncResultFilter
                 Expires = DateTimeOffset.UtcNow.AddMinutes(5) // Should match your token lifetime
             };
 
-            context.HttpContext.Response.Cookies.Append(_authOptions.Cookie.Name, response.AccessToken, cookieOptions);
+            // TODO: Set the cookie path and domain as needed, ENCRYPT the token and implement CSRF Protection
+            // context.HttpContext.Response.Cookies.Append(_authOptions.Cookies.Name, response.Data.AccessToken, cookieOptions);
         }
 
         await next();

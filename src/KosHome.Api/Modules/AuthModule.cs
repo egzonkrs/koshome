@@ -1,5 +1,8 @@
 using System;
+using System.Threading.Tasks;
 using Keycloak.Net;
+using KosHome.Api.Filters;
+using KosHome.Api.Handlers;
 using KosHome.Application.Abstractions.Auth.Services;
 using KosHome.Domain.Abstractions;
 using KosHome.Infrastructure.Authentication.Abstractions;
@@ -9,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Refit;
 using KeycloakOptions = KosHome.Infrastructure.Configurations.KeycloakOptions;
 
@@ -39,24 +43,7 @@ public sealed class AuthModule : IModule
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
-            options.Events = new JwtBearerEvents
-            {
-                OnChallenge = async context =>
-                {
-                    context.HandleResponse();
-                    context.Response.StatusCode = 401;
-                    context.Response.ContentType = "application/json";
-            
-                    var response = new
-                    {
-                        status = 401,
-                        message = "You are not authorized to access this resource",
-                        code = "UNAUTHORIZED_ACCESS"
-                    };
-            
-                    await context.Response.WriteAsJsonAsync(response);
-                }
-            };
+            options.Events.OnChallenge = CustomJwtChallengeHandler.HandleAsync;
         });
 
         services.AddSingleton(_ => new KeycloakClient(keycloakOptions.Authority, keycloakOptions.ClientSecret, new Keycloak.Net.KeycloakOptions(
@@ -68,6 +55,7 @@ public sealed class AuthModule : IModule
             .AddRefitClient<IKeycloakAuthApi>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(keycloakOptions.Authority));
         
+        services.AddScoped<JwtCookieResultFilter>();
         services.AddScoped<IKeycloakClientWrapper, KeycloakClientWrapper>();
         services.AddScoped<IKeycloakIdentityService, KeycloakIdentityService>();
     }
