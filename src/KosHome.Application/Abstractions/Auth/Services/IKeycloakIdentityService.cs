@@ -22,9 +22,9 @@ public interface IKeycloakIdentityService
     /// <summary>
     /// Logs in a user using Keycloak and retrieves an access token.
     /// </summary>
-    /// <param name="username">User's username or email.</param>
+    /// <param name="email">User's email or email.</param>
     /// <param name="password">User's password.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A Result containing the token response.</returns>
-    Task<Result<string>> LoginAsync(string username, string password, CancellationToken cancellationToken = default);
+    Task<Result<string>> LoginAsync(string email, string password, CancellationToken cancellationToken = default);
 }

@@ -1,3 +1,4 @@
+using KosHome.Api.Extensions.Web.Versioning;
 using KosHome.Application.Cities.GetCities;
 using KosHome.Domain.Abstractions;
 using Microsoft.AspNetCore.Routing;
@@ -11,5 +12,6 @@ public sealed class CoreModule : IModule
     {
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetCityById).Assembly));
+        services.AddApiExplorerVersioning();
     }
 }

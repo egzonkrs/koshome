@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentResults;
@@ -11,6 +13,7 @@ using KosHome.Application.Abstractions.Auth.Services;
 using KosHome.Infrastructure.Authentication.Abstractions;
 using KosHome.Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
+using Refit;
 using KeycloakUser = Keycloak.Net.Models.Users.User;
 
 namespace KosHome.Infrastructure.Authentication.Services;
@@ -85,7 +88,7 @@ public sealed class KeycloakIdentityService : IKeycloakIdentityService
         }
     }
     
-    public async Task<Result<string>> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
+    public async Task<Result<string>> LoginAsync(string email, string password, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -94,16 +97,21 @@ public sealed class KeycloakIdentityService : IKeycloakIdentityService
                 { "grant_type", "password" },
                 { "client_id", _authOptions.Value.Keycloak.ClientId },
                 { "client_secret", _authOptions.Value.Keycloak.ClientSecret },
-                { "username", username },
+                { "username", email },
                 { "password", password }
             };
 
             var tokenResponse = await _keycloakAuthApi.LoginAsync(_realmName, parameters);
             return Result.Ok(tokenResponse.AccessToken);
         }
+        catch (ApiException ex) when (ex.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.BadRequest)
+        {
+            _logger.LogWarning("Invalid login credentials for User with Email: {Email}", email);
+            return Result.Fail(UsersErrors.InvalidCredentials());
+        }
         catch(Exception ex)
         {
-            _logger.LogError(ex, "Failed to login user {username} with Exception Message: {ExMessage}", username, ex.Message);
+            _logger.LogError(ex, "Failed to login user {email} with Exception Message: {ExMessage}", email, ex.Message);
             return Result.Fail(UsersErrors.UnexpectedError());
         }
     }

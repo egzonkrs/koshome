@@ -39,8 +39,27 @@ public static class ControllerBaseExtensions
         
         if (result.IsFailed && result.HasException<Exception>())
         {
-            var problemDetails = CreateProblemDetailsInternal(controller.HttpContext, HttpStatusCode.InternalServerError, result.ToResult());
+            var problemDetails = new ApiResponse<TData>
+            {
+                IsFailed = result.IsFailed,
+                IsSuccess = result.IsSuccess,
+                Errors = result.Errors.ToCodeMessageDictionary(),
+            };
+            
             return controller.StatusCode((int)HttpStatusCode.InternalServerError, problemDetails);
+        }
+
+        var isUnauthorized = result.Errors.Any(err =>
+            err is CustomFluentError customError && customError.Code.Equals("INVALID_CREDENTIALS", StringComparison.OrdinalIgnoreCase));
+
+        if (isUnauthorized)
+        {
+            return controller.Unauthorized(new ApiResponse<TData>
+            {
+                IsFailed = result.IsFailed,
+                IsSuccess = result.IsSuccess,
+                Errors = result.Errors.ToCodeMessageDictionary()
+            });
         }
 
         var isNotFoundResult = result.Errors.Any(err => err is CustomFluentError customFluentError && customFluentError.Code.EndsWith("_NOT_FOUND", StringComparison.OrdinalIgnoreCase));
@@ -50,11 +69,17 @@ public static class ControllerBaseExtensions
             {
                 IsFailed = result.IsFailed,
                 IsSuccess = result.IsSuccess,
-                Reasons = result.Reasons.ToCodeMessageDictionary(),
+                Errors = result.Errors.ToCodeMessageDictionary(),
             });
         }
 
-        var badRequestDetails = CreateProblemDetailsInternal(controller.HttpContext, HttpStatusCode.BadRequest, result.ToResult());
+        var badRequestDetails = new ApiResponse<TData>
+        {
+            IsFailed = result.IsFailed,
+            IsSuccess = result.IsSuccess,
+            Errors = result.Errors.ToCodeMessageDictionary(),
+        };
+            
         return controller.BadRequest(badRequestDetails);
     }
     

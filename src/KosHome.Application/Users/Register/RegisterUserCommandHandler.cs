@@ -12,7 +12,7 @@ using KosHome.Domain.ValueObjects.Users;
 
 namespace KosHome.Application.Users.Register;
 
-public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Result<Guid>>
+public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Result<RegisterResponse>>
 {
     private readonly IKeycloakIdentityService _keycloakIdentityService;
     private readonly IUserRepository _userRepository;
@@ -25,7 +25,7 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Guid>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<RegisterResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var keycloakIdentityResult = await _keycloakIdentityService.CreateIdentityUserAndAssignRoleAsync(request.IdentityUser, cancellationToken);
         if (keycloakIdentityResult.IsFailed)
@@ -41,14 +41,23 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
 
         user.SetIdentityId(keycloakIdentityResult.Value.ToString());
 
+        var isUserSaved = false;
         await _unitOfWork.ExecuteTransactionAsync(async x =>
         {
             await _userRepository.InsertAsync(user, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            isUserSaved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
             x.Complete();
         });
         
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return keycloakIdentityResult;
+        if (isUserSaved is false)
+        {
+            return Result.Fail(UsersErrors.NoChangesDetected);
+        }
+        
+        return Result.Ok(new RegisterResponse
+        {
+            UserId = user.Id,
+            IdentityId = user.IdentityId,
+        });
     }
 }

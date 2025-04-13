@@ -19,7 +19,7 @@ public sealed class FileUploaderService : IFileUploaderService
     private readonly ILogger<FileUploaderService> _logger;
 
     private const string PetImagesDirectory = "wwwroot/images/pets";
-    private readonly string[] _allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
+    private readonly string[] _allowedExtensions = [".jpg", ".jpeg", ".png", ".gif"];
     private const int MaxFileSize = 10 * 1024 * 1024; // 10 MB
 
     public FileUploaderService(ILogger<FileUploaderService> logger)

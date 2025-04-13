@@ -59,6 +59,12 @@ public static class UsersErrors
         new CustomFluentError("IDENTITY_USER_INVALID", "The identity user is invalid.");
 
     /// <summary>
+    /// Returns an error indicating that the provided login credentials are invalid.
+    /// </summary>
+    public static Error InvalidCredentials()
+        => new CustomFluentError("INVALID_CREDENTIALS", "The username or password provided is incorrect.");
+    
+    /// <summary>
     /// Returns an error indicating that the specified identity user was not found.
     /// </summary>
     public static Error IdentityUserNotFound

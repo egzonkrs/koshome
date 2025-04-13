@@ -1,4 +1,5 @@
 using KosHome.Api.Extensions;
+using KosHome.Api.Middlewares;
 using KosHome.Api.Modules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
@@ -13,7 +14,7 @@ builder.Services.AddModule(new AuthModule(builder.Configuration));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 var app = builder.Build();
 
@@ -23,8 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler();
-app.UseStatusCodePages();
+app.UseExceptionHandler(_ => {});
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

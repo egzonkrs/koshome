@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentResults;
+using KosHome.Api.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace KosHome.Api.Middlewares;
@@ -14,12 +16,10 @@ namespace KosHome.Api.Middlewares;
 internal sealed class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger;
-    private readonly IProblemDetailsService _problemDetailsService;
 
-    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IProblemDetailsService problemDetailsService)
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
     {
         _logger = logger;
-        _problemDetailsService = problemDetailsService;
     }
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exceptionThrew, CancellationToken cancellationToken)
@@ -34,21 +34,18 @@ internal sealed class GlobalExceptionHandler : IExceptionHandler
         
         httpContext.Response.StatusCode = httpResponseStatus;
 
-        var problemDetails = new ProblemDetails
+        var problemDetails = new ApiResponse<Result>
         {
-            Status = httpResponseStatus,
-            Title = "An error occurred",
-            Type = exceptionThrew.GetType().Name,
-            Detail = exceptionThrew.Message
+            IsFailed = true,
+            IsSuccess = false,
+            Errors = new Dictionary<string, string>
+            {
+                { "UNHANDLED_ERROR", exceptionThrew.Message }
+            },
         };
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
-        
-        return await _problemDetailsService.TryWriteAsync(new ProblemDetailsContext
-        {
-            Exception = exceptionThrew,
-            HttpContext = httpContext,
-            ProblemDetails = problemDetails
-        });
+        httpContext.Response.StatusCode = httpResponseStatus;
+        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+        return true;
     }
 }

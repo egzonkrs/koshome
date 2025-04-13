@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using KosHome.Api.Models.Responses;
+using KosHome.Application.Users.Login;
 using KosHome.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -18,5 +18,5 @@ public static class Constants
     /// <summary>
     /// A sample user role (player).
     /// </summary>
-    public const string PlayerRole = "user";
+    public const string PlayerRole = KosHomePrefix + "user";
 }
