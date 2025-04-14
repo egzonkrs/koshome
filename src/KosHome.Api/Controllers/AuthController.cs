@@ -4,13 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using KosHome.Api.Extensions;
 using KosHome.Api.Filters;
+using KosHome.Api.Models.Authentication.Requests;
 using KosHome.Application.Abstractions.Auth.Constants;
 using Microsoft.AspNetCore.Mvc;
 using KosHome.Application.Users.Login;
-using Microsoft.AspNetCore.Identity.Data;
 using KosHome.Application.Users.Register;
 using KosHome.Domain.Entities.Users;
-using RegisterRequest = KosHome.Api.Models.Requests.RegisterRequest;
+using RegisterRequest = KosHome.Api.Models.Authentication.Requests.RegisterRequest;
 
 namespace KosHome.Api.Controllers;
 
@@ -26,7 +26,7 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPost("register")]
+    [HttpPost("signup")]
     public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)
     {
         var registerResult = await _mediator.Send(new RegisterUserCommand

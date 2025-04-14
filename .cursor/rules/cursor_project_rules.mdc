@@ -1,0 +1,39 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# General Project Coding Rules & Conventions
+
+- **Language:** Utilize C# 12 features where appropriate and beneficial (e.g., collection expressions) except primary constructors.
+- **SOLID Principles:** Strictly follow SOLID principles (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion) in all class and interface design.
+- **Dependency Injection:** Use constructor injection via the built-in .NET Dependency Injection container for loose coupling. Register services in `Program.cs` or dedicated extension methods.
+- **Asynchronous Programming:** Use `async`/`await` thoroughly for all I/O-bound operations (database access, HTTP calls, file system access). Avoid `async void` except for event handlers.
+- **Immutability:** Prefer record types (`record` or `record struct`) for DTOs and Value Objects to promote immutability.
+- **API Style:** Prefer standard Controller Endpoints over Minimal APIs for better organization in larger applications following Clean Architecture.
+- **Exception Handling:** Implement robust exception handling, primarily at the application boundaries (e.g., global exception handling middleware). Use exceptions for truly exceptional, unrecoverable situations, not for control flow or expected errors (use `FluentResults` for that).
+- **Logging:** Implement structured logging of Micosoft default Logging library. Log relevant information, including correlation IDs, especially at application entry/exit points and when errors occur. Avoid logging sensitive data, and use `PascalCase` for parameters when we log, avoid bu
+- **Caching:** Implement caching strategies (e.g., in-memory, distributed cache) where appropriate to improve performance, particularly for frequently accessed, rarely changing data.
+- **Configuration Files:** Use environment-specific configuration files (`appsettings.Development.json`, `appsettings.Production.json`, etc.) and environment variables. Do not commit secrets to source control.
+- **CORS:** Configure Cross-Origin Resource Sharing (CORS) policies appropriately in the API project to allow requests from the Next.js frontend domain. Be as restrictive as possible.
+- **HTTPS:** Enforce HTTPS for all communication in production environments. Use HTTPS redirection middleware.
+- **Model Validation:** Implement validations using FluentValidation on Requests received by the API.
+- **Typing:** Always use `var` when the type is immediately obvious from the right-hand side of the assignment (e.g., `var user = new User();`, `var result = await _context.Users.ToListAsync();`).
+- **Accessibility:** Make types `internal` by default. Use `public` only when necessary for cross-project visibility according to Clean Architecture rules. Make classes `sealed` by default unless designed for inheritance.
+- **Null Checks:** Use `is null` and `is not null` for null-checking reference types. Use `ArgumentNullException.ThrowIfNull()` for validating non-nullable reference type method parameters at the beginning of methods.
+- **Naming Conventions:**
+    - Use `PascalCase` for classes, records, structs, interfaces, enums, methods, properties, and events.
+    - Use `camelCase` for local variables and method parameters.
+    - Prefix private fields with an underscore (`_`): `private readonly ILogger<MyService> _logger;`.
+    - Prefix interfaces with `I` (e.g., `IUserService`).
+    - Use descriptive names. Avoid abbreviations unless widely understood.
+    - For boolean variables and properties/methods returning booleans, use prefixes like `Is`, `Has`, `Can`, `Should` (e.g., `IsEnabled`, `HasPermission`, `CanExecute`).
+- **`this` Keyword:** Avoid using the `this` keyword to access instance members unless necessary to resolve ambiguity (e.g., when a local variable or parameter has the same name as a field).
+- **Comments:**
+    - Do **not** use inline comments to explain *what* the code is doing; the code should be self-explanatory.
+    - Use XML documentation comments (`<summary>`, `<param>`, `<returns>`, `<remarks>`, etc.) for all public/internal types and members (classes, methods, properties, records).
+    - Keep summary comments concise and clear. Avoid jargon. Explain *why* something is done if the reason is non-obvious.
+    - Document record properties using `<summary>`.
+- **File Organization:** Maintain a clean and logical folder structure within each project, reflecting the architecture (e.g., `Features/`, `Commands/`, `Queries/`, `Requests/`, `Responses`, `Entities/`, `ValueObjects/`, `Persistence/`, `Repositories/`, `Services/`, etc.).
+
+

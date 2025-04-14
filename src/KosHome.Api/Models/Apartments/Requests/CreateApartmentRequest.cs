@@ -1,0 +1,17 @@
+using System;
+
+namespace KosHome.Api.Models.Apartments.Requests;
+
+public record CreateApartmentRequest(
+    string Title,
+    string Description,
+    decimal Price,
+    string ListingType,
+    string PropertyType,
+    string Address,
+    Ulid LocationId,
+    int Bedrooms,
+    int Bathrooms,
+    int SquareMeters,
+    double Latitude,
+    double Longitude); 

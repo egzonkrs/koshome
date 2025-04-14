@@ -1,6 +1,7 @@
 using System;
 using KosHome.Domain.Abstractions;
 using KosHome.Domain.Data.Abstractions;
+using KosHome.Domain.Enums;
 using KosHome.Domain.Events.Apartments;
 using KosHome.Domain.ValueObjects.Apartments;
 

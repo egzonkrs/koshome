@@ -49,19 +49,19 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
                 .HasColumnType("decimal(18,2)");
         });
 
-        builder.OwnsOne(apartment => apartment.ListingType, listingTypeBuilder =>
-        {
-            listingTypeBuilder.Property(lt => lt.Value)
-                .HasColumnName(nameof(Apartment.ListingType))
-                .HasMaxLength(10);
-        });
-
-        builder.OwnsOne(apartment => apartment.PropertyType, propertyTypeBuilder =>
-        {
-            propertyTypeBuilder.Property(pt => pt.Value)
-                .HasColumnName(nameof(Apartment.PropertyType))
-                .HasMaxLength(50);
-        });
+        // builder.OwnsOne(apartment => apartment.ListingType, listingTypeBuilder =>
+        // {
+        //     listingTypeBuilder.Property(lt => lt.Value)
+        //         .HasColumnName(nameof(Apartment.ListingType))
+        //         .HasMaxLength(10);
+        // });
+        //
+        // builder.OwnsOne(apartment => apartment.PropertyType, propertyTypeBuilder =>
+        // {
+        //     propertyTypeBuilder.Property(pt => pt.Value)
+        //         .HasColumnName(nameof(Apartment.PropertyType))
+        //         .HasMaxLength(50);
+        // });
 
         builder.OwnsOne(apartment => apartment.Address, addressBuilder =>
         {

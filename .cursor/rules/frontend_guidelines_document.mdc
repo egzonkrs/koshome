@@ -1,0 +1,19 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Frontend Guidelines (Next.js with TypeScript)
+
+- **Project Structure:** Follow standard Next.js App Router conventions. Organize components, hooks, contexts, types, and utilities logically (e.g., `components/`, `hooks/`, `contexts/`, `lib/`, `types/`).
+- **TypeScript:** Use TypeScript for all code. Enable strict mode (`"strict": true` in `tsconfig.json`). Define types and interfaces clearly. Avoid `any` where possible.
+- **Styling:** Use Tailwind CSS utility classes directly in components. Define custom theme settings and base styles in `tailwind.config.js` and `globals.css`. Avoid CSS-in-JS or separate CSS modules unless strictly necessary for specific cases. Keep components self-contained regarding styles.
+- **State Management:** Use React Context API for global or shared state. Create specific contexts for distinct domains of state (e.g., `AuthContext`, `ThemeContext`). Avoid overusing context for local component state; use `useState` or `useReducer` for that.
+- **Forms:** Use React Hook Form for all form handling. Leverage its hooks (`useForm`, `Controller`) for managing form state, validation, and submission.
+- **Validation:** Use Zod for defining validation schemas. Integrate Zod schemas with React Hook Form using `@hookform/resolvers/zod`. Perform validation both client-side and server-side. Store all Zod validation schemas in separate files under the validations folder for better organization and reusability.
+- **Components:** Build reusable, composable components. Prefer functional components with hooks. Keep components focused on a single responsibility.
+- **API Calls:** Create dedicated functions or hooks for interacting with the backend API. Handle loading, success, and error states appropriately. Consider using a data-fetching library like SWR or React Query if client-side caching/synchronization becomes complex, otherwise use standard `Workspace` or a lightweight wrapper within `useEffect` or server components/actions.
+- **Naming Conventions:** Use `PascalCase` for components, types, and interfaces. Use `camelCase` for functions, variables, and hooks.
+- **File Naming:** Use `kebab-case` for file and folder names (e.g., `user-profile.tsx`, `auth-context.ts`).
+- **Code Style:** Follow standard React/TypeScript best practices. Use a linter (ESLint) and formatter (Prettier) with agreed-upon configurations.
+

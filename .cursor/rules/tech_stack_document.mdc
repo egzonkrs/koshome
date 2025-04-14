@@ -1,0 +1,48 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Project Tech Stack
+
+## Frontend
+
+- **Framework:** Next.js (latest stable version)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS (latest stable version)
+- **State Management:** React Context API
+- **Forms:** React Hook Form
+- **Validation:** Zod
+- **UI Components:** Shadcn/UI
+
+## Backend
+
+- **Framework:** .NET 9 (Targeting latest stable version)
+- **Language:** C# 12
+- **Architecture:** Clean Architecture, Domain-Driven Design (DDD)
+- **API Style:** RESTful Controller Endpoints
+- **Data Access:** Entity Framework Core (EF Core)
+- **Database:** PostgreSQL (Inferred from Npgsql package)
+- **Object Mapping:** Manual Mappers
+- **Identifiers:** ULIDs
+- **HTTP Clients:** Refit with HttpClientFactory
+- **CQRS/Mediator:** MediatR
+- **Result Handling:** FluentResults
+- **Authentication/Authorization:** Keycloak (via `Keycloak.Net.Core` and `Microsoft.AspNetCore.Authentication.JwtBearer`)
+- **API Versioning:** `Asp.Versioning.Mvc`
+- **API Documentation:** OpenAPI (Swagger via `Swashbuckle.AspNetCore`)
+- **Configuration:** `IOptions` pattern
+- **Logging:** Structured Logging (Microsoft.Extensions.Logging)
+
+## Common Backend Packages
+
+- `Asp.Versioning.Mvc` / `Asp.Versioning.Mvc.ApiExplorer`
+- `Keycloak.Net.Core`
+- `Refit` / `Refit.HttpClientFactory`
+- `Ulid`
+- `Swashbuckle.AspNetCore`
+- `MediatR` / `MediatR.Contracts`
+- `Microsoft.AspNetCore.Authentication.JwtBearer`
+- `Npgsql.EntityFrameworkCore.PostgreSQL`
+- `Microsoft.EntityFrameworkCore` (Core, Design, Tools, Relational)
+- `FluentResults`

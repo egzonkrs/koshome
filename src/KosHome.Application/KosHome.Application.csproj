@@ -9,14 +9,12 @@
       <PackageReference Include="FluentResults" />
       <PackageReference Include="Keycloak.Net.Core" />
       <PackageReference Include="Microsoft.AspNetCore.Http.Features" />
+      <PackageReference Include="FluentValidation" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     </ItemGroup>
     
     <ItemGroup>
         <ProjectReference Include="..\KosHome.Domain\KosHome.Domain.csproj"/>
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Apartments\GetApartment\" />
     </ItemGroup>
 
 </Project>
