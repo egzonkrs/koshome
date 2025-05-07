@@ -8,7 +8,7 @@ namespace KosHome.Infrastructure.Data.Configurations;
 
 internal sealed class CountryConfiguration : IEntityTypeConfiguration<Country>
 {
-    private const string TableName = "countries";
+    private const string TableName = "koshome_countries";
 
     public void Configure(EntityTypeBuilder<Country> builder)
     {

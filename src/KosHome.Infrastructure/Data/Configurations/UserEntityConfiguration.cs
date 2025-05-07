@@ -8,7 +8,7 @@ namespace KosHome.Infrastructure.Data.Configurations;
 
 internal sealed class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
-    private const string TableName = "users";
+    private const string TableName = "koshome_users";
 
     public void Configure(EntityTypeBuilder<User> builder)
     {

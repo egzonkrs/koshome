@@ -35,5 +35,6 @@ public sealed class DataModule : IModule
         
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IApartmentRepository, ApartmentRepository>();
+        services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
     }
 }

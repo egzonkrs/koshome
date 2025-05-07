@@ -9,7 +9,7 @@ namespace KosHome.Infrastructure.Data.Configurations;
 
 internal sealed class CityConfiguration : IEntityTypeConfiguration<City>
 {
-    private const string TableName = "citites";
+    private const string TableName = "koshome_cities";
 
     public void Configure(EntityTypeBuilder<City> builder)
     {

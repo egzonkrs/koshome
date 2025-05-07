@@ -8,7 +8,7 @@ namespace KosHome.Infrastructure.Data.Configurations;
 
 internal sealed class ImageConfiguration : IEntityTypeConfiguration<ApartmentImage>
 {
-    private const string TableName = "apartment_images";
+    private const string TableName = "koshome_apartment_images";
 
     public void Configure(EntityTypeBuilder<ApartmentImage> builder)
     {

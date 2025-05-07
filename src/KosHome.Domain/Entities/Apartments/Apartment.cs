@@ -2,6 +2,7 @@ using System;
 using KosHome.Domain.Abstractions;
 using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Enums;
+using KosHome.Domain.Entities.PropertyTypes;
 using KosHome.Domain.Events.Apartments;
 using KosHome.Domain.ValueObjects.Apartments;
 
@@ -19,7 +20,7 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
         Description description,
         Price price,
         ListingType listingType,
-        PropertyType propertyType,
+        Ulid propertyTypeId,
         Address address,
         Ulid locationId,
         int bedrooms,
@@ -35,7 +36,7 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
         Description = description;
         Price = price;
         ListingType = listingType;
-        PropertyType = propertyType;
+        PropertyTypeId = propertyTypeId;
         Address = address;
         LocationId = locationId;
         Bedrooms = bedrooms;
@@ -43,7 +44,6 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
         SquareMeters = squareMeters;
         Latitude = latitude;
         Longitude = longitude;
-        SquareMeters = squareMeters;
         
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
@@ -84,7 +84,12 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
     public ListingType ListingType { get; private set; }
 
     /// <summary>
-    /// Gets the property type (e.g., Apartment, House).
+    /// Gets the property type ID.
+    /// </summary>
+    public Ulid PropertyTypeId { get; private set; }
+    
+    /// <summary>
+    /// Gets the property type navigation property.
     /// </summary>
     public PropertyType PropertyType { get; private set; }
 
@@ -140,15 +145,15 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
     /// <param name="title">Title of the apartment.</param>
     /// <param name="description">Description of the apartment.</param>
     /// <param name="price">Price of the apartment.</param>
-    /// <param name="listingType">Listing type.</param>
-    /// <param name="propertyType">Property type.</param>
+    /// <param name="listingType">Listing type (Sale or Rent).</param>
+    /// <param name="propertyTypeId">Property type identifier.</param>
     /// <param name="address">Address of the apartment.</param>
     /// <param name="locationId">Location identifier.</param>
     /// <param name="bedrooms">Number of bedrooms.</param>
     /// <param name="bathrooms">Number of bathrooms.</param>
     /// <param name="squareMeters">Size in square meters.</param>
-    /// <param name="latitude"></param>
-    /// <param name="longitude"></param>
+    /// <param name="latitude">Latitude coordinate.</param>
+    /// <param name="longitude">Longitude coordinate.</param>
     /// <returns>A new <see cref="Apartment"/> instance.</returns>
     public static Apartment Create(
         Ulid userId,
@@ -156,7 +161,7 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
         Description description,
         Price price,
         ListingType listingType,
-        PropertyType propertyType,
+        Ulid propertyTypeId,
         Address address,
         Ulid locationId,
         int bedrooms,
@@ -172,7 +177,7 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
             description,
             price,
             listingType,
-            propertyType,
+            propertyTypeId,
             address,
             locationId,
             bedrooms,

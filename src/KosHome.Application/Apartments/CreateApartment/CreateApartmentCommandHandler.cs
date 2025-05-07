@@ -15,21 +15,37 @@ namespace KosHome.Application.Apartments.CreateApartment;
 public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartmentCommand, Result<Ulid>>
 {
     private readonly IApartmentRepository _apartmentRepository;
-    private readonly IUserContextAccessor _userContextAccessor;
+    private readonly IPropertyTypeRepository _propertyTypeRepository;
+    // private readonly IUserContextAccessor _userContextAccessor;
 
     public CreateApartmentCommandHandler(
         IApartmentRepository apartmentRepository,
-        IUserContextAccessor userContextAccessor)
+        IPropertyTypeRepository propertyTypeRepository)
+        // IUserContextAccessor userContextAccessor)
     {
         _apartmentRepository = apartmentRepository;
-        _userContextAccessor = userContextAccessor;
+        _propertyTypeRepository = propertyTypeRepository;
+        // _userContextAccessor = userContextAccessor;
     }
 
     public async Task<Result<Ulid>> Handle(CreateApartmentCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(_userContextAccessor.Id))
+        // if (string.IsNullOrEmpty(_userContextAccessor.Id))
+        // {
+        //     return Result.Fail(ApartmentsErrors.UnauthorizedAccess());
+        // }
+
+        // Parse ListingType enum from request
+        if (!Enum.TryParse<ListingType>(request.ListingType, true, out var listingTypeEnum))
         {
-            return Result.Fail(new CustomFluentError("UNAUTHORIZED_ACCESS", "User not authenticated."));
+            return Result.Fail(new CustomFluentError("INVALID_LISTING_TYPE", $"Invalid listing type value: '{request.ListingType}'. Valid values are Sale, Rent."));
+        }
+
+        // Get property type by name
+        var propertyType = await _propertyTypeRepository.GetByNameAsync(request.PropertyType, cancellationToken);
+        if (propertyType is null)
+        {
+            return Result.Fail(ApartmentsErrors.PropertyTypeNotFound(request.PropertyType));
         }
 
         var title = new Title(request.Title);
@@ -37,23 +53,14 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
         var price = new Price(request.Price);
         var address = new Address(request.Address);
 
-        if (!Enum.TryParse<ListingType>(request.ListingType, true, out var listingType))
-        {
-            return Result.Fail(new CustomFluentError("INVALID_LISTING_TYPE", "Invalid listing type provided."));
-        }
-
-        if (!Enum.TryParse<PropertyType>(request.PropertyType, true, out var propertyType))
-        {
-            return Result.Fail(new CustomFluentError("INVALID_PROPERTY_TYPE", "Invalid property type provided."));
-        }
-
         var apartment = Apartment.Create(
-            Ulid.Parse(_userContextAccessor.Id),
+            Ulid.NewUlid(),
+            // Ulid.Parse(_userContextAccessor.Id),
             title,
             description,
             price,
-            listingType,
-            propertyType,
+            listingTypeEnum,
+            propertyType.Id,
             address,
             request.LocationId,
             request.Bedrooms,

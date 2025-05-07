@@ -1,6 +1,8 @@
 using KosHome.Domain.Entities.ApartmentImages;
 using KosHome.Domain.Entities.Apartments;
 using KosHome.Domain.Entities.Cities;
+using KosHome.Domain.Enums;
+using KosHome.Domain.Entities.PropertyTypes;
 using KosHome.Domain.Entities.Users;
 using KosHome.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +12,7 @@ namespace KosHome.Infrastructure.Data.Configurations;
 
 internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartment>
 {
-    private const string TableName = "apartments";
+    private const string TableName = "koshome_apartments";
     
     public void Configure(EntityTypeBuilder<Apartment> builder)
     {
@@ -49,19 +51,15 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
                 .HasColumnType("decimal(18,2)");
         });
 
-        // builder.OwnsOne(apartment => apartment.ListingType, listingTypeBuilder =>
-        // {
-        //     listingTypeBuilder.Property(lt => lt.Value)
-        //         .HasColumnName(nameof(Apartment.ListingType))
-        //         .HasMaxLength(10);
-        // });
-        //
-        // builder.OwnsOne(apartment => apartment.PropertyType, propertyTypeBuilder =>
-        // {
-        //     propertyTypeBuilder.Property(pt => pt.Value)
-        //         .HasColumnName(nameof(Apartment.PropertyType))
-        //         .HasMaxLength(50);
-        // });
+        builder.Property(apartment => apartment.ListingType)
+            .HasConversion<string>()
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(apartment => apartment.PropertyTypeId)
+            .HasConversion(new UlidToStringConverter())
+            .HasMaxLength(26)
+            .IsRequired();
 
         builder.OwnsOne(apartment => apartment.Address, addressBuilder =>
         {
@@ -103,6 +101,12 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
         builder.HasOne<City>()
             .WithMany()
             .HasForeignKey(apartment => apartment.LocationId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.HasOne(a => a.PropertyType)
+            .WithMany()
+            .HasForeignKey(a => a.PropertyTypeId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
         

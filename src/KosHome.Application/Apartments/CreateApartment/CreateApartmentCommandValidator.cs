@@ -32,9 +32,7 @@ public sealed class CreateApartmentCommandValidator : AbstractValidator<CreateAp
 
         RuleFor(x => x.PropertyType)
             .NotEmpty()
-            .WithMessage("Property type is required.")
-            .Must(x => Enum.TryParse<PropertyType>(x, true, out _))
-            .WithMessage("Invalid property type. Valid values are: Apartment, House, Commercial, Land");
+            .WithMessage("Property type is required.");
 
         RuleFor(x => x.Address)
             .NotEmpty()
