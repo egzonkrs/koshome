@@ -1,9 +1,12 @@
+using System.Reflection;
 using KosHome.Api.Extensions.Web.Versioning;
 using KosHome.Application.Cities.GetCities;
 using KosHome.Domain.Abstractions;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
+using KosHome.Application.Cities.Create;
+using KosHome.Application.Cities.Update;
 using KosHome.Application.Common.Behaviors;
 using MediatR;
 
@@ -14,10 +17,13 @@ public sealed class CoreModule : IModule
     public void Load(IServiceCollection services)
     {
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetCityById).Assembly));
-        services.AddApiExplorerVersioning();
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(GetCityById).Assembly);
+            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
         
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddValidatorsFromAssembly(typeof(Application.Apartments.CreateApartment.CreateApartmentCommandValidator).Assembly);
+        services.AddApiExplorerVersioning();
+        services.AddValidatorsFromAssembly(typeof(CreateCityCommandValidator).Assembly);
     }
 }

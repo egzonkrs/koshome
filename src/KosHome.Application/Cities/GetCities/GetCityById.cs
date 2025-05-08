@@ -1,14 +1,11 @@
 using System;
 using MediatR;
 using FluentResults;
-using KosHome.Domain.Entities.Cities;
 
 namespace KosHome.Application.Cities.GetCities;
 
-public sealed class GetCityById : IRequest<Result<CityResponse>>
-{
-    /// <summary>
-    /// The Id of the City.
-    /// </summary>
-    public Ulid CityId { get; set; }
-}
+/// <summary>
+/// Represents the query to get a city by its unique identifier.
+/// </summary>
+/// <param name="CityId">The unique identifier of the city.</param>
+public sealed record GetCityById(Ulid CityId) : IRequest<Result<CityResponse>>;

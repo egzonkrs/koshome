@@ -68,8 +68,9 @@ public abstract class EfRepositoryBase<TPrimaryKey, TEntity> : IRepository<TPrim
             return await QueryFiltersInternal().AnyAsync(cancellationToken);
         }
 
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
         // return await QueryFiltersInternal().Where(specification).AnyAsync(cancellationToken); // TODO: fix it
+        return await QueryFiltersInternal().AnyAsync(cancellationToken); // TODO: fix it
     }
 
     /// <inheritdoc />

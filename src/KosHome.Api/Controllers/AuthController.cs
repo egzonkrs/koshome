@@ -15,7 +15,7 @@ using RegisterRequest = KosHome.Api.Models.Authentication.Requests.RegisterReque
 namespace KosHome.Api.Controllers;
 
 [ApiController]
-[Route("v{version:apiVersion}/auth")]
+[Route("api/v{version:apiVersion}/auth")]
 [ApiVersion("1")]
 public class AuthController : ControllerBase
 {

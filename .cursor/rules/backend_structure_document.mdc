@@ -37,6 +37,7 @@ alwaysApply: true
 - **Configuration:** Use strongly-typed configuration (`IOptions<T>`, `IConfiguration`) bound from `appsettings.json`, environment variables, etc.
 - **Middleware:** Use ASP.NET Core middleware for cross-cutting concerns like exception handling, logging, request correlation, security headers, and potentially mapping `Result` failures to HTTP responses.
 - **Background Tasks:** Use `BackgroundService` for long-running or scheduled tasks.
+- **REST APIs:** Use Level 2 maturity level for REST API design, use `HTTP Verbs` inside the Controllers for every controller.
 - **Property setters:** All domain entity properties must use `get; private set;` (no public setters) to enforce invariants and encapsulation except `Id` properties which can be public.
 - **Migrations (EF Core CLI):**
     - **Create a new migration** 

@@ -11,7 +11,7 @@ using KosHome.Application.Apartments.CreateApartment;
 namespace KosHome.Api.Controllers;
 
 [ApiController]
-[Route("v{version:apiVersion}/apartment")]
+[Route("api/v{version:apiVersion}/apartment")]
 [ApiVersion("1")]
 [Authorize]
 public class ApartmentController : ControllerBase

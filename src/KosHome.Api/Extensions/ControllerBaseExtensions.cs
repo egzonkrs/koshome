@@ -83,41 +83,41 @@ public static class ControllerBaseExtensions
         return controller.BadRequest(badRequestDetails);
     }
     
-    /// <summary>
-    /// Creates an ActionResult from a non-generic Result.
-    /// </summary>
-    public static ActionResult ToActionResult(this ControllerBase controller, Result result)
-    {
-        if (result.IsSuccess)
-        {
-            return controller.NoContent();
-        }
+    // /// <summary>
+    // /// Creates an ActionResult from a non-generic Result.
+    // /// </summary>
+    // public static ActionResult ToActionResult(this ControllerBase controller, Result result)
+    // {
+    //     if (result.IsSuccess)
+    //     {
+    //         return controller.NoContent();
+    //     }
+    //
+    //     if (result.IsFailed && result.HasException<Exception>())
+    //     {
+    //         var problemDetails = CreateProblemDetailsInternal(controller.HttpContext, HttpStatusCode.InternalServerError, result);
+    //         return controller.StatusCode((int)HttpStatusCode.InternalServerError, problemDetails);
+    //     }
+    //
+    //     var badRequestDetails = CreateProblemDetailsInternal(controller.HttpContext, HttpStatusCode.BadRequest, result);
+    //     return controller.BadRequest(badRequestDetails);
+    // }
 
-        if (result.IsFailed && result.HasException<Exception>())
-        {
-            var problemDetails = CreateProblemDetailsInternal(controller.HttpContext, HttpStatusCode.InternalServerError, result);
-            return controller.StatusCode((int)HttpStatusCode.InternalServerError, problemDetails);
-        }
-
-        var badRequestDetails = CreateProblemDetailsInternal(controller.HttpContext, HttpStatusCode.BadRequest, result);
-        return controller.BadRequest(badRequestDetails);
-    }
-
-    /// <summary>
-    /// Creates ProblemDetailsWithErrors from a FluentResults Result.
-    /// </summary>
-    private static ProblemDetailsWithErrors CreateProblemDetailsInternal(
-        HttpContext httpContext, HttpStatusCode httpStatusCode, Result result)
-    {
-        return new ProblemDetailsWithErrors
-        {
-            Type = "about:blank",
-            Title = httpStatusCode.ToString(),
-            Instance = httpContext.Request.Path,
-            Status = (int)httpStatusCode,
-            Errors = result.Errors.ToCodeMessageDictionary()
-        };
-    }
+    // /// <summary>
+    // /// Creates ProblemDetailsWithErrors from a FluentResults Result.
+    // /// </summary>
+    // private static ProblemDetailsWithErrors CreateProblemDetailsInternal(
+    //     HttpContext httpContext, HttpStatusCode httpStatusCode, Result result)
+    // {
+    //     return new ProblemDetailsWithErrors
+    //     {
+    //         Type = "about:blank",
+    //         Title = httpStatusCode.ToString(),
+    //         Instance = httpContext.Request.Path,
+    //         Status = (int)httpStatusCode,
+    //         Errors = result.Errors.ToCodeMessageDictionary()
+    //     };
+    // }
 
     /// <summary>
     /// Converts an IEnumerable of IError to a dictionary grouping error messages.

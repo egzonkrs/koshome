@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using KosHome.Domain.Data.Abstractions;
@@ -12,5 +12,4 @@ namespace KosHome.Domain.Data.Repositories;
 /// </summary>
 public interface ICityRepository : IRepository<City>
 {
-    Task<City> GetByNameAsync(CityName cityName, CancellationToken cancellationToken = default);
 }

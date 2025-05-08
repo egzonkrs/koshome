@@ -13,12 +13,11 @@ public static class CityMappingProfile
     /// </summary>
     public static CityResponse ToResponse(this City city)
     {
-        return new CityResponse
-        {
-            Id = city.Id,
-            CountryId = city.CountryId,
-            CityName = city.CityName.Value,
-            CityAlpha3Code = city.Alpha3Code.Value,
-        };
+        return new CityResponse(
+            city.Id,
+            city.CityName.Value,
+            city.Alpha3Code.Value,
+            city.CountryId
+        );
     }
 }

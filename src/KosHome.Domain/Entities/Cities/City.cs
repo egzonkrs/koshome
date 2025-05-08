@@ -64,4 +64,18 @@ public sealed class City : DomainEntity, IEntity
         city.RaiseDomainEvent(new CityCreatedDomainEvent(city.Id));
         return city;
     }
+
+    /// <summary>
+    /// Updates the city details.
+    /// </summary>
+    /// <param name="cityName">The new city name.</param>
+    /// <param name="alpha3Code">The new alpha3 code.</param>
+    /// <param name="countryId">The new country ID.</param>
+    public void UpdateDetails(CityName cityName, CityAlpha3Code alpha3Code, Ulid countryId)
+    {
+        CityName = cityName;
+        Alpha3Code = alpha3Code;
+        CountryId = countryId;
+        RaiseDomainEvent(new CityUpdatedDomainEvent(Id));
+    }
 }
