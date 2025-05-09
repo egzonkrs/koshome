@@ -5,7 +5,6 @@ using System.Net;
 using FluentResults;
 using KosHome.Api.Models;
 using KosHome.Domain.Common;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KosHome.Api.Extensions;
@@ -49,8 +48,7 @@ public static class ControllerBaseExtensions
             return controller.StatusCode((int)HttpStatusCode.InternalServerError, problemDetails);
         }
 
-        var isUnauthorized = result.Errors.Any(err =>
-            err is CustomFluentError customError && customError.Code.Equals("INVALID_CREDENTIALS", StringComparison.OrdinalIgnoreCase));
+        var isUnauthorized = result.Errors.Any(err => err is CustomFluentError customError && customError.Code.Equals("INVALID_CREDENTIALS", StringComparison.OrdinalIgnoreCase));
 
         if (isUnauthorized)
         {
@@ -82,42 +80,6 @@ public static class ControllerBaseExtensions
             
         return controller.BadRequest(badRequestDetails);
     }
-    
-    // /// <summary>
-    // /// Creates an ActionResult from a non-generic Result.
-    // /// </summary>
-    // public static ActionResult ToActionResult(this ControllerBase controller, Result result)
-    // {
-    //     if (result.IsSuccess)
-    //     {
-    //         return controller.NoContent();
-    //     }
-    //
-    //     if (result.IsFailed && result.HasException<Exception>())
-    //     {
-    //         var problemDetails = CreateProblemDetailsInternal(controller.HttpContext, HttpStatusCode.InternalServerError, result);
-    //         return controller.StatusCode((int)HttpStatusCode.InternalServerError, problemDetails);
-    //     }
-    //
-    //     var badRequestDetails = CreateProblemDetailsInternal(controller.HttpContext, HttpStatusCode.BadRequest, result);
-    //     return controller.BadRequest(badRequestDetails);
-    // }
-
-    // /// <summary>
-    // /// Creates ProblemDetailsWithErrors from a FluentResults Result.
-    // /// </summary>
-    // private static ProblemDetailsWithErrors CreateProblemDetailsInternal(
-    //     HttpContext httpContext, HttpStatusCode httpStatusCode, Result result)
-    // {
-    //     return new ProblemDetailsWithErrors
-    //     {
-    //         Type = "about:blank",
-    //         Title = httpStatusCode.ToString(),
-    //         Instance = httpContext.Request.Path,
-    //         Status = (int)httpStatusCode,
-    //         Errors = result.Errors.ToCodeMessageDictionary()
-    //     };
-    // }
 
     /// <summary>
     /// Converts an IEnumerable of IError to a dictionary grouping error messages.
@@ -144,14 +106,4 @@ public static class ControllerBaseExtensions
             .GroupBy(item => item.Code)
             .ToDictionary(group => group.Key, group => group.First().Message);
     }
-}
-
-
-
-/// <summary>
-/// A ProblemDetails extension that includes a dictionary of errors.
-/// </summary>
-public class ProblemDetailsWithErrors : ProblemDetails
-{
-    public Dictionary<string, string> Errors { get; set; } = new(StringComparer.Ordinal);
 }
