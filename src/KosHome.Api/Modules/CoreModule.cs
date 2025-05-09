@@ -1,4 +1,3 @@
-using System.Reflection;
 using KosHome.Api.Extensions.Web.Versioning;
 using KosHome.Application.Cities.GetCities;
 using KosHome.Domain.Abstractions;
@@ -6,9 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using KosHome.Application.Cities.Create;
-using KosHome.Application.Cities.Update;
 using KosHome.Application.Common.Behaviors;
-using MediatR;
 
 namespace KosHome.Api.Modules;
 
@@ -20,7 +17,7 @@ public sealed class CoreModule : IModule
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(GetCityById).Assembly);
-            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            cfg.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
         });
         
         services.AddApiExplorerVersioning();
