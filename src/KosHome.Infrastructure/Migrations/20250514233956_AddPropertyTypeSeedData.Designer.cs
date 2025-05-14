@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace KosHome.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250506224243_RemoveListingTypeTable")]
-    partial class RemoveListingTypeTable
+    [Migration("20250514233956_AddPropertyTypeSeedData")]
+    partial class AddPropertyTypeSeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,7 +52,7 @@ namespace KosHome.Infrastructure.Migrations
 
                     b.HasIndex("ApartmentId");
 
-                    b.ToTable("apartment_images", (string)null);
+                    b.ToTable("koshome_apartment_images", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.Apartments.Apartment", b =>
@@ -67,6 +67,11 @@ namespace KosHome.Infrastructure.Migrations
                     b.Property<int>("Bedrooms")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CityId")
+                        .IsRequired()
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -77,11 +82,6 @@ namespace KosHome.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
-
-                    b.Property<string>("LocationId")
-                        .IsRequired()
-                        .HasMaxLength(26)
-                        .HasColumnType("character varying(26)");
 
                     b.Property<double>("Longitude")
                         .HasColumnType("double precision");
@@ -104,13 +104,13 @@ namespace KosHome.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("CityId");
 
                     b.HasIndex("PropertyTypeId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("apartments", (string)null);
+                    b.ToTable("koshome_apartments", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.Cities.City", b =>
@@ -134,7 +134,7 @@ namespace KosHome.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("citites", (string)null);
+                    b.ToTable("koshome_cities", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.Countries.Country", b =>
@@ -154,7 +154,7 @@ namespace KosHome.Infrastructure.Migrations
                     b.HasIndex("Alpha3Code")
                         .IsUnique();
 
-                    b.ToTable("countries", (string)null);
+                    b.ToTable("koshome_countries", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.PropertyTypes.PropertyType", b =>
@@ -183,40 +183,40 @@ namespace KosHome.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("property_types", (string)null);
+                    b.ToTable("koshome_property_types", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = "01JTKW80QRKAHETZQ7B0REKPXD",
-                            CreatedAt = new DateTime(2025, 5, 6, 22, 42, 43, 64, DateTimeKind.Utc).AddTicks(73),
+                            Id = "01JV8JPHSBJ4EQPT79A8SE1TMY",
+                            CreatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4890),
                             Description = "A residential apartment.",
                             Name = "Apartment",
-                            UpdatedAt = new DateTime(2025, 5, 6, 22, 42, 43, 64, DateTimeKind.Utc).AddTicks(73)
+                            UpdatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4890)
                         },
                         new
                         {
-                            Id = "01JTKW80QRD6J22QWYF3PEN7T7",
-                            CreatedAt = new DateTime(2025, 5, 6, 22, 42, 43, 64, DateTimeKind.Utc).AddTicks(75),
+                            Id = "01JV8JPHSBA5XKHAPNJMRKTYRW",
+                            CreatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4892),
                             Description = "A residential house.",
                             Name = "House",
-                            UpdatedAt = new DateTime(2025, 5, 6, 22, 42, 43, 64, DateTimeKind.Utc).AddTicks(75)
+                            UpdatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4892)
                         },
                         new
                         {
-                            Id = "01JTKW80QR8RBSSS34TA1DPDCZ",
-                            CreatedAt = new DateTime(2025, 5, 6, 22, 42, 43, 64, DateTimeKind.Utc).AddTicks(76),
+                            Id = "01JV8JPHSBCCVE15AA564PRCYV",
+                            CreatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4893),
                             Description = "A commercial property.",
                             Name = "Commercial",
-                            UpdatedAt = new DateTime(2025, 5, 6, 22, 42, 43, 64, DateTimeKind.Utc).AddTicks(76)
+                            UpdatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4893)
                         },
                         new
                         {
-                            Id = "01JTKW80QRS6GPP7M5P1QDBNF8",
-                            CreatedAt = new DateTime(2025, 5, 6, 22, 42, 43, 64, DateTimeKind.Utc).AddTicks(77),
+                            Id = "01JV8JPHSBT9JS8XM4RQFPD68G",
+                            CreatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4894),
                             Description = "A land plot.",
                             Name = "Land",
-                            UpdatedAt = new DateTime(2025, 5, 6, 22, 42, 43, 64, DateTimeKind.Utc).AddTicks(78)
+                            UpdatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4894)
                         });
                 });
 
@@ -242,7 +242,7 @@ namespace KosHome.Infrastructure.Migrations
                     b.HasIndex("IdentityId")
                         .IsUnique();
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("koshome_users", (string)null);
                 });
 
             modelBuilder.Entity("KosHome.Domain.Entities.ApartmentImages.ApartmentImage", b =>
@@ -258,7 +258,7 @@ namespace KosHome.Infrastructure.Migrations
                 {
                     b.HasOne("KosHome.Domain.Entities.Cities.City", null)
                         .WithMany()
-                        .HasForeignKey("LocationId")
+                        .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -286,7 +286,7 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("apartments");
+                            b1.ToTable("koshome_apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -304,7 +304,7 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("apartments");
+                            b1.ToTable("koshome_apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -321,7 +321,7 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("apartments");
+                            b1.ToTable("koshome_apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -339,7 +339,7 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.HasKey("ApartmentId");
 
-                            b1.ToTable("apartments");
+                            b1.ToTable("koshome_apartments");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApartmentId");
@@ -376,7 +376,7 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.HasKey("CityId");
 
-                            b1.ToTable("citites");
+                            b1.ToTable("koshome_cities");
 
                             b1.WithOwner()
                                 .HasForeignKey("CityId");
@@ -399,7 +399,7 @@ namespace KosHome.Infrastructure.Migrations
 
                             b1.HasKey("CountryId");
 
-                            b1.ToTable("countries");
+                            b1.ToTable("koshome_countries");
 
                             b1.WithOwner()
                                 .HasForeignKey("CountryId");
@@ -425,7 +425,7 @@ namespace KosHome.Infrastructure.Migrations
                             b1.HasIndex("Value")
                                 .IsUnique();
 
-                            b1.ToTable("users");
+                            b1.ToTable("koshome_users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

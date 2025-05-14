@@ -1,5 +1,6 @@
 using System;
 using FluentResults;
+using KosHome.Domain.Entities.Apartments;
 using MediatR;
 
 namespace KosHome.Application.Apartments.CreateApartment;
@@ -37,9 +38,9 @@ public sealed class CreateApartmentCommand : IRequest<Result<Ulid>>
     public string Address { get; init; }
 
     /// <summary>
-    /// See <see cref="KosHome.Domain.Entities.Apartments.Apartment.LocationId"/>
+    /// See <see cref="Apartment.CityId"/>
     /// </summary>
-    public Ulid LocationId { get; init; }
+    public Ulid CityId { get; init; }
 
     /// <summary>
     /// See <see cref="KosHome.Domain.Entities.Apartments.Apartment.Bedrooms"/>

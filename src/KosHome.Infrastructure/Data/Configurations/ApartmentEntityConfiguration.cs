@@ -68,7 +68,7 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
                 .HasMaxLength(255);
         });
 
-        builder.Property(apartment => apartment.LocationId)
+        builder.Property(apartment => apartment.CityId)
             .HasConversion(new UlidToStringConverter())
             .HasMaxLength(26)
             .IsRequired();
@@ -100,7 +100,7 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
         
         builder.HasOne<City>()
             .WithMany()
-            .HasForeignKey(apartment => apartment.LocationId)
+            .HasForeignKey(apartment => apartment.CityId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
         

@@ -22,7 +22,7 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
         ListingType listingType,
         Ulid propertyTypeId,
         Address address,
-        Ulid locationId,
+        Ulid cityId,
         int bedrooms,
         int bathrooms,
         int squareMeters,
@@ -38,7 +38,7 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
         ListingType = listingType;
         PropertyTypeId = propertyTypeId;
         Address = address;
-        LocationId = locationId;
+        CityId = cityId;
         Bedrooms = bedrooms;
         Bathrooms = bathrooms;
         SquareMeters = squareMeters;
@@ -99,9 +99,9 @@ public sealed class Apartment : DomainEntity, IEntity<Ulid>
     public Address Address { get; private set; }
 
     /// <summary>
-    /// Gets the location identifier.
+    /// Gets the city identifier.
     /// </summary>
-    public Ulid LocationId { get; private set; }
+    public Ulid CityId { get; private set; }
 
     /// <summary>
     /// Gets the number of bedrooms.

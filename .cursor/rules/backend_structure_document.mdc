@@ -41,7 +41,9 @@ alwaysApply: true
 - **Property setters:** All domain entity properties must use `get; private set;` (no public setters) to enforce invariants and encapsulation except `Id` properties which can be public.
 - **Migrations (EF Core CLI):**
     - **Create a new migration** 
-      `dotnet ef migrations add <MigrationName> --project src/KosHome.Infrastructure --startup-project src/Presentation/KosHome.Api`
+      `dotnet ef migrations add <MigrationName> --project src/KosHome.Infrastructure --startup-project src/KosHome.Api`
     - **Apply migrations / update the database**  
-      `dotnet ef database update --project src/KosHome.Infrastructure --startup-project src/Presentation/KosHome.Api`.
+      `dotnet ef database update --project src/KosHome.Infrastructure --startup-project src/KosHome.Api`.
     - **Migration file immutability:** Strictly **do not edit** generated migration files. If changes are needed, either adjust your model before generating a new migration or create a new migration to apply fixes.
+- **Return Failures:** When using `Result.Fail(<error>)` always use the appropriate error codes inside `src/KosHome.Domain/Common/<EntityName>Errors.cs>` classes. Check for existing error codes that can be used before adding new ones. 
+Never use codes not defined in an `ErrorCodes.cs` file. Each entity has its own `<EntityName>Errors.cs` file ex: `src/KosHome.Domain/Common/CitiesErrors.cs`.

@@ -35,14 +35,14 @@ public sealed class DeleteCityCommandHandler : IRequestHandler<DeleteCityCommand
     /// <returns>A result indicating success or failure.</returns>
     public async Task<Result<bool>> Handle(DeleteCityCommand request, CancellationToken cancellationToken)
     {
+        var city = await _cityRepository.GetByIdAsync(request.Id, cancellationToken);
+        if (city is null)
+        {
+            return Result.Fail(CitiesErrors.NotFound(request.Id.ToString()));
+        }
+        
         return await _unitOfWork.ExecuteTransactionAsync(async scope =>
         {
-            var city = await _cityRepository.GetByIdAsync(request.Id, cancellationToken);
-            if (city is null)
-            {
-                return Result.Fail(CitiesErrors.NotFound(request.Id.ToString()));
-            }
-
             await _cityRepository.DeleteAsync(city, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

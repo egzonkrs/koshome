@@ -64,6 +64,11 @@ namespace KosHome.Infrastructure.Migrations
                     b.Property<int>("Bedrooms")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CityId")
+                        .IsRequired()
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -74,11 +79,6 @@ namespace KosHome.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
-
-                    b.Property<string>("LocationId")
-                        .IsRequired()
-                        .HasMaxLength(26)
-                        .HasColumnType("character varying(26)");
 
                     b.Property<double>("Longitude")
                         .HasColumnType("double precision");
@@ -101,7 +101,7 @@ namespace KosHome.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("CityId");
 
                     b.HasIndex("PropertyTypeId");
 
@@ -185,35 +185,35 @@ namespace KosHome.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "01JTM1B3HMXBSYJRG084R73CHY",
-                            CreatedAt = new DateTime(2025, 5, 7, 0, 11, 47, 124, DateTimeKind.Utc).AddTicks(9470),
+                            Id = "01JV8JPHSBJ4EQPT79A8SE1TMY",
+                            CreatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4890),
                             Description = "A residential apartment.",
                             Name = "Apartment",
-                            UpdatedAt = new DateTime(2025, 5, 7, 0, 11, 47, 124, DateTimeKind.Utc).AddTicks(9471)
+                            UpdatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4890)
                         },
                         new
                         {
-                            Id = "01JTM1B3HMWA79TD76R77RJWNV",
-                            CreatedAt = new DateTime(2025, 5, 7, 0, 11, 47, 124, DateTimeKind.Utc).AddTicks(9473),
+                            Id = "01JV8JPHSBA5XKHAPNJMRKTYRW",
+                            CreatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4892),
                             Description = "A residential house.",
                             Name = "House",
-                            UpdatedAt = new DateTime(2025, 5, 7, 0, 11, 47, 124, DateTimeKind.Utc).AddTicks(9473)
+                            UpdatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4892)
                         },
                         new
                         {
-                            Id = "01JTM1B3HM402ANSXC2BV3Z08S",
-                            CreatedAt = new DateTime(2025, 5, 7, 0, 11, 47, 124, DateTimeKind.Utc).AddTicks(9519),
+                            Id = "01JV8JPHSBCCVE15AA564PRCYV",
+                            CreatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4893),
                             Description = "A commercial property.",
                             Name = "Commercial",
-                            UpdatedAt = new DateTime(2025, 5, 7, 0, 11, 47, 124, DateTimeKind.Utc).AddTicks(9520)
+                            UpdatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4893)
                         },
                         new
                         {
-                            Id = "01JTM1B3HM6DEN2BCH0Q1AWSV0",
-                            CreatedAt = new DateTime(2025, 5, 7, 0, 11, 47, 124, DateTimeKind.Utc).AddTicks(9521),
+                            Id = "01JV8JPHSBT9JS8XM4RQFPD68G",
+                            CreatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4894),
                             Description = "A land plot.",
                             Name = "Land",
-                            UpdatedAt = new DateTime(2025, 5, 7, 0, 11, 47, 124, DateTimeKind.Utc).AddTicks(9522)
+                            UpdatedAt = new DateTime(2025, 5, 14, 23, 39, 56, 587, DateTimeKind.Utc).AddTicks(4894)
                         });
                 });
 
@@ -255,7 +255,7 @@ namespace KosHome.Infrastructure.Migrations
                 {
                     b.HasOne("KosHome.Domain.Entities.Cities.City", null)
                         .WithMany()
-                        .HasForeignKey("LocationId")
+                        .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

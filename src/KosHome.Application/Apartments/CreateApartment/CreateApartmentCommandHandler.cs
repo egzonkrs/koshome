@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentResults;
 using KosHome.Domain.Abstractions;
 using KosHome.Domain.Common;
+using KosHome.Domain.Data.Abstractions;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Apartments;
 using KosHome.Domain.Enums;
@@ -17,28 +18,24 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
     private readonly IApartmentRepository _apartmentRepository;
     private readonly IPropertyTypeRepository _propertyTypeRepository;
     private readonly IUserContextAccessor _userContextAccessor;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateApartmentCommandHandler(
         IApartmentRepository apartmentRepository,
         IPropertyTypeRepository propertyTypeRepository,
-        IUserContextAccessor userContextAccessor)
+        IUserContextAccessor userContextAccessor, IUnitOfWork unitOfWork)
     {
         _apartmentRepository = apartmentRepository;
         _propertyTypeRepository = propertyTypeRepository;
         _userContextAccessor = userContextAccessor;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Ulid>> Handle(CreateApartmentCommand request, CancellationToken cancellationToken)
     {
-        // if (string.IsNullOrEmpty(_userContextAccessor.Id))
-        // {
-        //     return Result.Fail(ApartmentsErrors.UnauthorizedAccess());
-        // }
-
-        // Parse ListingType enum from request
         if (!Enum.TryParse<ListingType>(request.ListingType, true, out var listingTypeEnum))
         {
-            return Result.Fail(new CustomFluentError("INVALID_LISTING_TYPE", $"Invalid listing type value: '{request.ListingType}'. Valid values are Sale, Rent."));
+            return Result.Fail(ApartmentsErrors.ListingTypeNotFound(request.ListingType));
         }
 
         // Get property type by name
@@ -53,16 +50,16 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
         var price = new Price(request.Price);
         var address = new Address(request.Address);
 
+        var qwe = _userContextAccessor.AppUserId;
         var apartment = Apartment.Create(
-            Ulid.NewUlid(),
-            // Ulid.Parse(_userContextAccessor.Id),
+            _userContextAccessor.AppUserId,
             title,
             description,
             price,
             listingTypeEnum,
             propertyType.Id,
             address,
-            request.LocationId,
+            request.CityId,
             request.Bedrooms,
             request.Bathrooms,
             request.SquareMeters,
@@ -70,6 +67,10 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
             request.Longitude);
 
         var apartmentId = await _apartmentRepository.InsertAsync(apartment, cancellationToken);
-        return Result.Ok(apartmentId);
+        var isApartmentSaved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
+
+        return isApartmentSaved is false 
+            ? Result.Fail(ApartmentsErrors.NoChangesDetected()) 
+            : Result.Ok(apartmentId);
     }
 } 

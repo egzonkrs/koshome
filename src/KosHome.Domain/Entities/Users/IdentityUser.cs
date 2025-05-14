@@ -51,5 +51,5 @@ public sealed class IdentityUser
     /// <summary>
     /// Additional attributes stored for the user.
     /// </summary>
-    public IDictionary<string, string[]> Attributes { get; set; }
+    public IDictionary<string, string[]> Attributes { get; set; } = new Dictionary<string, string[]>();
 }

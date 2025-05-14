@@ -9,7 +9,7 @@ public record CreateApartmentRequest(
     string ListingType,
     string PropertyType,
     string Address,
-    Ulid LocationId,
+    Ulid CityId,
     int Bedrooms,
     int Bathrooms,
     int SquareMeters,

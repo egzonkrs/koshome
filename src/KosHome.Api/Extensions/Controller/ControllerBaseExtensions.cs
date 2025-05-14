@@ -7,7 +7,7 @@ using KosHome.Api.Models;
 using KosHome.Domain.Common;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KosHome.Api.Extensions;
+namespace KosHome.Api.Extensions.Controller;
 
 /// <summary>
 /// Extensions for converting FluentResults into ActionResult responses.
