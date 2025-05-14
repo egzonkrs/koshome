@@ -59,7 +59,7 @@ public sealed class UpdateCityCommandHandler : IRequestHandler<UpdateCityCommand
             
             return Result.Ok(true);
         }
-        catch (ArgumentException ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error while updating City with Id: {CityId}", request.Id);
             return Result.Fail(CitiesErrors.UnexpectedError());

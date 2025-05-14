@@ -19,8 +19,10 @@ public sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineB
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators) =>
+    public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators)
+    {
         _validators = validators;
+    }
 
     /// <inheritdoc />
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)

@@ -4,7 +4,7 @@ using KosHome.Domain.Abstractions;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
-using KosHome.Application.Cities.Create;
+using KosHome.Application.Cities.Update;
 using KosHome.Application.Common.Behaviors;
 
 namespace KosHome.Api.Modules;
@@ -21,6 +21,6 @@ public sealed class CoreModule : IModule
         });
         
         services.AddApiExplorerVersioning();
-        services.AddValidatorsFromAssembly(typeof(CreateCityCommandValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(UpdateCityCommandValidator).Assembly);
     }
 }
