@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentResults;
@@ -27,4 +28,13 @@ public interface IKeycloakIdentityService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A Result containing the token response.</returns>
     Task<Result<string>> LoginAsync(string email, string password, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Updates a Keycloak user's attributes.
+    /// </summary>
+    /// <param name="identityId">The identity ID of the user.</param>
+    /// <param name="attributes">The attributes to update.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A Result indicating success or failure.</returns>
+    Task<Result<bool>> UpdateUserAttributesAsync(string identityId, IDictionary<string, IEnumerable<string>> attributes, CancellationToken cancellationToken = default);
 }

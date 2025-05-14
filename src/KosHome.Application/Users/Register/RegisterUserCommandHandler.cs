@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MediatR;
 using FluentResults;
 using System.Threading;
@@ -27,19 +28,22 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
 
     public async Task<Result<RegisterResponse>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var keycloakIdentityResult = await _keycloakIdentityService.CreateIdentityUserAndAssignRoleAsync(request.IdentityUser, cancellationToken);
-        if (keycloakIdentityResult.IsFailed)
-        {
-            return Result.Fail(keycloakIdentityResult.Errors);
-        }
-        
         var user = User.Create(
             new FirstName(request.IdentityUser.FirstName),
             new LastName(request.IdentityUser.LastName),
             new Email(request.IdentityUser.Email)
         );
 
-        user.SetIdentityId(keycloakIdentityResult.Value.ToString());
+        request.IdentityUser.Attributes["app_user_id"] = [user.Id.ToString()];
+        
+        var keycloakIdentityResult = await _keycloakIdentityService.CreateIdentityUserAndAssignRoleAsync(request.IdentityUser, cancellationToken);
+        if (keycloakIdentityResult.IsFailed)
+        {
+            return Result.Fail(keycloakIdentityResult.Errors);
+        }
+        
+        var identityId = keycloakIdentityResult.Value.ToString();
+        user.SetIdentityId(identityId);
 
         var isUserSaved = false;
         await _unitOfWork.ExecuteTransactionAsync(async x =>

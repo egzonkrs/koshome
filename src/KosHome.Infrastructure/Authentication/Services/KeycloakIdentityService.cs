@@ -140,4 +140,30 @@ public sealed class KeycloakIdentityService : IKeycloakIdentityService
                 kvp => kvp.Value?.AsEnumerable() ?? []) ?? new Dictionary<string, IEnumerable<string>>()
         };
     }
+
+    public async Task<Result<bool>> UpdateUserAttributesAsync(string identityId, IDictionary<string, IEnumerable<string>> attributes, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(identityId))
+            {
+                return Result.Fail(UsersErrors.IdentityUserInvalid);
+            }
+            
+            var updateResult = await _keycloakWrapper.UpdateUserAttributesAsync(_realmName, identityId, attributes, cancellationToken);
+            if (updateResult.IsFailed)
+            {
+                _logger.LogError("Failed to update attributes for user with ID: {IdentityId}", identityId);
+                return Result.Fail(updateResult.Errors);
+            }
+            
+            _logger.LogInformation("Successfully updated attributes for user with ID: {IdentityId}", identityId);
+            return Result.Ok(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to update user attributes for ID {IdentityId}: {Message}", identityId, ex.Message);
+            return Result.Fail(UsersErrors.UnexpectedError());
+        }
+    }
 }

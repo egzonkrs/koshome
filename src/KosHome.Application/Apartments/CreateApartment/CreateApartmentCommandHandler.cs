@@ -16,16 +16,16 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
 {
     private readonly IApartmentRepository _apartmentRepository;
     private readonly IPropertyTypeRepository _propertyTypeRepository;
-    // private readonly IUserContextAccessor _userContextAccessor;
+    private readonly IUserContextAccessor _userContextAccessor;
 
     public CreateApartmentCommandHandler(
         IApartmentRepository apartmentRepository,
-        IPropertyTypeRepository propertyTypeRepository)
-        // IUserContextAccessor userContextAccessor)
+        IPropertyTypeRepository propertyTypeRepository,
+        IUserContextAccessor userContextAccessor)
     {
         _apartmentRepository = apartmentRepository;
         _propertyTypeRepository = propertyTypeRepository;
-        // _userContextAccessor = userContextAccessor;
+        _userContextAccessor = userContextAccessor;
     }
 
     public async Task<Result<Ulid>> Handle(CreateApartmentCommand request, CancellationToken cancellationToken)

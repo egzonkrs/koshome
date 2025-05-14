@@ -1,4 +1,5 @@
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using KosHome.Domain.Abstractions;
 using Microsoft.AspNetCore.Http;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 namespace KosHome.Infrastructure.Authentication;
 
 /// <summary>
-/// Implementation of <see cref="IUserContextAccessor"/> that retrieves user information from the current HTTP context.
+/// Retrieves the current user’s claims from the HTTP context.
 /// </summary>
 public sealed class UserContextAccessor : IUserContextAccessor
 {
@@ -17,15 +18,21 @@ public sealed class UserContextAccessor : IUserContextAccessor
         _httpContextAccessor = httpContextAccessor;
     }
 
-    /// <inheritdoc />
-    public string Id => _httpContextAccessor.HttpContext?.User.Claims
-        .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+    /// <summary>All claims for the current principal (empty when no context).</summary>
+    public IEnumerable<Claim> Claims => _httpContextAccessor.HttpContext?.User?.Claims ?? [];
 
-    /// <inheritdoc />
-    public string Name => _httpContextAccessor.HttpContext?.User.Claims
-        .FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? string.Empty;
+    /// <summary>Gets the Keycloak subject / identity GUID.</summary>
+    public string IdentityId => _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-    /// <inheritdoc />
-    public string Email => _httpContextAccessor.HttpContext?.User.Claims
-        .FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? string.Empty;
-} 
+    /// <summary>Gets the application‑level ULID of the user (or <c>Ulid.Empty</c>).</summary>
+    public Ulid AppUserId =>
+        Ulid.TryParse(_httpContextAccessor.HttpContext?.User.FindFirst("app_user_id")?.Value, out var convertedUlid)
+            ? convertedUlid
+            : Ulid.Empty;
+
+    /// <summary>Gets the display name.</summary>
+    public string Name => _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+
+    /// <summary>Gets the email address.</summary>
+    public string Email => _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+}

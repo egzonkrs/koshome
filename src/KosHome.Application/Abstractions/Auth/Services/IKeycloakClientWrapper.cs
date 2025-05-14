@@ -52,4 +52,14 @@ public interface IKeycloakClientWrapper
     /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
     /// <returns>The role if found, or an error if not found.</returns>
     Task<Result<Role>> GetRoleByNameAsync(string realm, string roleName, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Updates a user in Keycloak with new attributes.
+    /// </summary>
+    /// <param name="realm">The realm where the user exists.</param>
+    /// <param name="userId">The ID of the user to update.</param>
+    /// <param name="attributes">The attributes to update or add.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A result indicating success or failure.</returns>
+    Task<Result<bool>> UpdateUserAttributesAsync(string realm, string userId, IDictionary<string, IEnumerable<string>> attributes, CancellationToken cancellationToken = default);
 }

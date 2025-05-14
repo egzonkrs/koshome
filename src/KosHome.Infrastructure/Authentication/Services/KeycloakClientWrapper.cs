@@ -43,11 +43,41 @@ public sealed class KeycloakClientWrapper : IKeycloakClientWrapper
 
     public async Task<Result<Role>> GetRoleByNameAsync(string realm, string roleName, CancellationToken cancellationToken = default)
     {
-        return await _keycloakClient.GetRoleByNameAsync(realm, roleName, cancellationToken);
+        var role = await _keycloakClient.GetRoleByNameAsync(realm, roleName, cancellationToken);
+        return role != null ? Result.Ok(role) : Result.Fail<Role>("Role not found");
     }
 
     public async Task<IEnumerable<Role>> GetRolesAsync(string realm, int? first = null, int? max = null, string? search = null, bool? briefRepresentation = null, CancellationToken cancellationToken = default)
     {
         return await _keycloakClient.GetRolesAsync(realm, first, max, search, briefRepresentation, cancellationToken);
+    }
+
+    public async Task<Result<bool>> UpdateUserAttributesAsync(string realm, string userId, IDictionary<string, IEnumerable<string>> attributes, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Get the current user
+            var user = await _keycloakClient.GetUserAsync(realm, userId, cancellationToken);
+            if (user == null)
+            {
+                return Result.Fail<bool>("User not found");
+            }
+            
+            // Merge the existing attributes with the new ones
+            user.Attributes ??= new Dictionary<string, IEnumerable<string>>();
+            
+            foreach (var attribute in attributes)
+            {
+                user.Attributes[attribute.Key] = attribute.Value;
+            }
+            
+            // Update the user in Keycloak
+            var updateResult = await _keycloakClient.UpdateUserAsync(realm, userId, user, cancellationToken);
+            return Result.Ok(updateResult);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail<bool>($"Failed to update user attributes: {ex.Message}");
+        }
     }
 } 

@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+
 namespace KosHome.Domain.Abstractions;
 
 /// <summary>
@@ -6,9 +10,19 @@ namespace KosHome.Domain.Abstractions;
 public interface IUserContextAccessor
 {
     /// <summary>
-    /// The User's Id.
+    /// The User's Claims
     /// </summary>
-    string Id { get; }
+    IEnumerable<Claim> Claims { get; }
+    
+    /// <summary>
+    /// The User's Keycloak Identity ID.
+    /// </summary>
+    string IdentityId { get; }
+    
+    /// <summary>
+    /// The User's Application ID (ULID) in our system.
+    /// </summary>
+    Ulid AppUserId { get; }
 
     /// <summary>
     /// The User's Full Name.

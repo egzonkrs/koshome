@@ -5,6 +5,7 @@ using KosHome.Api.Filters;
 using KosHome.Api.Handlers;
 using KosHome.Application.Abstractions.Auth.Services;
 using KosHome.Domain.Abstractions;
+using KosHome.Infrastructure.Authentication;
 using KosHome.Infrastructure.Authentication.Abstractions;
 using KosHome.Infrastructure.Authentication.Services;
 using KosHome.Infrastructure.Configurations;
@@ -55,8 +56,10 @@ public sealed class AuthModule : IModule
             .AddRefitClient<IKeycloakAuthApi>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(keycloakOptions.Authority));
         
+        services.AddHttpContextAccessor();
         services.AddScoped<JwtCookieResultFilter>();
         services.AddScoped<IKeycloakClientWrapper, KeycloakClientWrapper>();
         services.AddScoped<IKeycloakIdentityService, KeycloakIdentityService>();
+        services.AddScoped<IUserContextAccessor, UserContextAccessor>();
     }
 }

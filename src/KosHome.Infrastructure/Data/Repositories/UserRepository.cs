@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Users;
 using KosHome.Domain.ValueObjects.Users;
