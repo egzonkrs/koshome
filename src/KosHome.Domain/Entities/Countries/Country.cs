@@ -9,7 +9,7 @@ namespace KosHome.Domain.Entities.Countries;
 /// <summary>
 /// Represents a country entity.
 /// </summary>
-public sealed class Country : DomainEntity
+public sealed class Country : DomainEntity, IEntity
 {
     private Country(
         Ulid id,
@@ -28,7 +28,7 @@ public sealed class Country : DomainEntity
     /// <summary>
     /// The Id of the country.
     /// </summary>
-    public Ulid Id { get; private set; }
+    public Ulid Id { get; set; }
     
     /// <summary>
     /// Gets the country name.
@@ -57,5 +57,17 @@ public sealed class Country : DomainEntity
 
         country.RaiseDomainEvent(new CountryCreatedDomainEvent(country.Id));
         return country;
+    }
+    
+    /// <summary>
+    /// Updates the country details.
+    /// </summary>
+    /// <param name="countryName">The new country name.</param>
+    /// <param name="alpha3Code">The new alpha3 code.</param>
+    public void UpdateDetails(CountryName countryName, CountryAlpha3Code alpha3Code)
+    {
+        CountryName = countryName;
+        Alpha3Code = alpha3Code;
+        RaiseDomainEvent(new CountryUpdatedDomainEvent(Id));
     }
 }

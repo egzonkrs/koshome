@@ -2,6 +2,7 @@ using System;
 using KosHome.Domain.Abstractions;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Cities;
+using KosHome.Domain.Entities.Countries;
 using KosHome.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,7 @@ public sealed class DataModule : IModule
         
         services.AddEfCoreUnitOfWork<ApplicationDbContext>();
         services.AddEfCoreRepository<City, ICityRepository, CityRepository>();
+        services.AddEfCoreRepository<Country, ICountryRepository, CountryRepository>();
         
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IApartmentRepository, ApartmentRepository>();
