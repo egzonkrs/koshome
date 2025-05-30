@@ -1,0 +1,40 @@
+@startuml
+title User Login Flow
+
+actor "User" as user
+boundary "Next.js Frontend" as frontend
+boundary "API Controller" as controller
+control "MediatR" as mediator
+control "LoginCommandHandler" as handler
+boundary "Keycloak" as keycloak
+entity "UserRepository" as repo
+database "Database" as db
+
+user -> frontend: Enter Credentials
+frontend -> frontend: Validate Form (Zod)
+frontend -> controller: POST /api/v1/auth/login
+controller -> mediator: Send(LoginCommand)
+mediator -> handler: Handle(LoginCommand)
+
+handler -> handler: Validate request (FluentValidation)
+handler -> keycloak: Authenticate (Username/Password)
+keycloak --> handler: Return JWT Tokens or Error
+
+alt Authentication Success
+    handler -> repo: Get User Profile
+    repo -> db: Query User
+    db --> repo: Return User Data
+    repo --> handler: Return User Details
+    handler --> mediator: Return Result.Success(TokenResponse)
+    mediator --> controller: Return Success Result
+    controller --> frontend: 200 OK with Tokens
+    frontend -> frontend: Store Tokens
+    frontend --> user: Redirect to Dashboard
+else Authentication Failure
+    handler --> mediator: Return Result.Fail()
+    mediator --> controller: Return Error Result
+    controller --> frontend: 401 Unauthorized with Error
+    frontend --> user: Show Login Error
+end
+
+@enduml 

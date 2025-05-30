@@ -67,4 +67,13 @@ public sealed class ApartmentImage : DomainEntity, IEntity<Ulid>
         image.RaiseDomainEvent(new ApartmentImageAddedDomainEvent(image.Id));
         return image;
     }
+    
+    /// <summary>
+    /// Sets the primary status of the image.
+    /// </summary>
+    /// <param name="isPrimary">Whether the image should be primary.</param>
+    public void SetPrimaryStatus(bool isPrimary)
+    {
+        IsPrimary = isPrimary;
+    }
 }

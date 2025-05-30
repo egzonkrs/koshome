@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using FluentResults;
 using KosHome.Domain.Entities.Apartments;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace KosHome.Application.Apartments.CreateApartment;
 
@@ -66,4 +68,9 @@ public sealed class CreateApartmentCommand : IRequest<Result<Ulid>>
     /// See <see cref="KosHome.Domain.Entities.Apartments.Apartment.Longitude"/>
     /// </summary>
     public double Longitude { get; init; }
+    
+    /// <summary>
+    /// The images of the apartment.
+    /// </summary>
+    public IEnumerable<IFormFile> Images { get; init; }
 }

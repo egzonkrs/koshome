@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentResults;
+using KosHome.Application.Apartments.CreateApartmentImage;
 using KosHome.Domain.Abstractions;
 using KosHome.Domain.Common;
 using KosHome.Domain.Data.Abstractions;
@@ -19,45 +21,36 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
     private readonly IPropertyTypeRepository _propertyTypeRepository;
     private readonly IUserContextAccessor _userContextAccessor;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ISender _mediator;
 
     public CreateApartmentCommandHandler(
         IApartmentRepository apartmentRepository,
         IPropertyTypeRepository propertyTypeRepository,
-        IUserContextAccessor userContextAccessor, IUnitOfWork unitOfWork)
+        IUserContextAccessor userContextAccessor,
+        IUnitOfWork unitOfWork,
+        ISender mediator)
     {
         _apartmentRepository = apartmentRepository;
         _propertyTypeRepository = propertyTypeRepository;
         _userContextAccessor = userContextAccessor;
         _unitOfWork = unitOfWork;
+        _mediator = mediator;
     }
 
     public async Task<Result<Ulid>> Handle(CreateApartmentCommand request, CancellationToken cancellationToken)
     {
-        if (!Enum.TryParse<ListingType>(request.ListingType, true, out var listingTypeEnum))
-        {
-            return Result.Fail(ApartmentsErrors.ListingTypeNotFound(request.ListingType));
-        }
-
-        // Get property type by name
-        var propertyType = await _propertyTypeRepository.GetByNameAsync(request.PropertyType, cancellationToken);
-        if (propertyType is null)
-        {
-            return Result.Fail(ApartmentsErrors.PropertyTypeNotFound(request.PropertyType));
-        }
-
         var title = new Title(request.Title);
         var description = new Description(request.Description);
         var price = new Price(request.Price);
         var address = new Address(request.Address);
 
-        var qwe = _userContextAccessor.AppUserId;
         var apartment = Apartment.Create(
             _userContextAccessor.AppUserId,
             title,
             description,
             price,
-            listingTypeEnum,
-            propertyType.Id,
+            Enum.Parse<ListingType>(request.ListingType),
+            Ulid.NewUlid(), // "request.PropertyType",
             address,
             request.CityId,
             request.Bedrooms,
@@ -69,8 +62,40 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
         var apartmentId = await _apartmentRepository.InsertAsync(apartment, cancellationToken);
         var isApartmentSaved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
 
-        return isApartmentSaved is false 
-            ? Result.Fail(ApartmentsErrors.NoChangesDetected()) 
-            : Result.Ok(apartmentId);
+        if (!isApartmentSaved)
+        {
+            return Result.Fail(ApartmentsErrors.NoChangesDetected());
+        }
+
+        // Process images if provided
+        // if (request.Images != null && HasImages(request.Images))
+        // {
+        //     var createImagesCommand = new CreateApartmentImageCommand
+        //     {
+        //         ApartmentId = apartmentId,
+        //         Images = request.Images
+        //     };
+        //
+        //     var imagesResult = await _mediator.Send(createImagesCommand, cancellationToken);
+        //
+        //     if (imagesResult.IsFailed)
+        //     {
+        //         return Result.Fail(imagesResult.Errors);
+        //     }
+        // }
+
+        // scope.Complete();
+        return Result.Ok(apartmentId);
+
+        // return await _unitOfWork.ExecuteTransactionAsync(async scope =>
+        // {
+        //     
+        // });
     }
-} 
+    
+    //
+    // private bool HasImages(IEnumerable<IFormFile> images)
+    // {
+    //     return images.GetEnumerator().MoveNext();
+    // }
+}

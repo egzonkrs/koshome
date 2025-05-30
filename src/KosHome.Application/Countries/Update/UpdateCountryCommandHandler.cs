@@ -37,7 +37,6 @@ public sealed class UpdateCountryCommandHandler : IRequestHandler<UpdateCountryC
     /// Handles the update country command.
     /// </summary>
     /// <param name="request">The update country command.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A result indicating success or failure.</returns>
     public async Task<Result<bool>> Handle(UpdateCountryCommand request, CancellationToken cancellationToken)
     {
