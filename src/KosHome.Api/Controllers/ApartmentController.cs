@@ -30,7 +30,7 @@ public class ApartmentController : ControllerBase
     [ProducesResponseType(typeof(Ulid), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Create([FromBody] CreateApartmentRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromForm] CreateApartmentRequest request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new CreateApartmentCommand
         {
@@ -45,7 +45,8 @@ public class ApartmentController : ControllerBase
             Bathrooms = request.Bathrooms,
             SquareMeters = request.SquareMeters,
             Latitude = request.Latitude,
-            Longitude = request.Longitude
+            Longitude = request.Longitude,
+            Images = request.Images
         }, cancellationToken);
 
         return this.ToActionResult(result);

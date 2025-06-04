@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentResults;
 using KosHome.Application.Apartments.CreateApartmentImage;
@@ -68,21 +69,21 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
         }
 
         // Process images if provided
-        // if (request.Images != null && HasImages(request.Images))
-        // {
-        //     var createImagesCommand = new CreateApartmentImageCommand
-        //     {
-        //         ApartmentId = apartmentId,
-        //         Images = request.Images
-        //     };
-        //
-        //     var imagesResult = await _mediator.Send(createImagesCommand, cancellationToken);
-        //
-        //     if (imagesResult.IsFailed)
-        //     {
-        //         return Result.Fail(imagesResult.Errors);
-        //     }
-        // }
+        if (request.Images != null && request.Images.Any())
+        {
+            var createImagesCommand = new CreateApartmentImageCommand
+            {
+                ApartmentId = apartmentId,
+                Images = request.Images
+            };
+
+            var imagesResult = await _mediator.Send(createImagesCommand, cancellationToken);
+
+            if (imagesResult.IsFailed)
+            {
+                return Result.Fail(imagesResult.Errors);
+            }
+        }
 
         // scope.Complete();
         return Result.Ok(apartmentId);

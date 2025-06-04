@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using KosHome.Infrastructure.Data.Extensions;
 using KosHome.Infrastructure.Data.Repositories;
+using KosHome.Infrastructure.Images.Services;
+using KosHome.Application.Abstractions.Images.Services;
 
 namespace KosHome.Api.Modules;
 
@@ -38,5 +40,7 @@ public sealed class DataModule : IModule
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IApartmentRepository, ApartmentRepository>();
         services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
+        services.AddScoped<IApartmentImageRepository, ApartmentImageRepository>();
+        services.AddScoped<IApartmentImageService, ApartmentImageService>();
     }
 }
