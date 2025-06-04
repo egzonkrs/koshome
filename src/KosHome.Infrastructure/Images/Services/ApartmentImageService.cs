@@ -26,6 +26,7 @@ public sealed class ApartmentImageService : IApartmentImageService
     private const int MaxFileSize = 10 * 1024 * 1024; // 10 MB
     private const int MaxWidth = 1920;
     private const int MaxHeight = 1080;
+    private const double TargetAspectRatio = 16d / 9d; // Standard 16:9 aspect ratio
     private const int DefaultQuality = 85; // JPEG quality for compression
 
     public ApartmentImageService(ILogger<ApartmentImageService> logger)
@@ -76,22 +77,34 @@ public sealed class ApartmentImageService : IApartmentImageService
             using (var imageStream = image.OpenReadStream())
             using (var imageProcessed = await Image.LoadAsync(imageStream, cancellationToken))
             {
-                // Determine if we need to resize (only resize if image is vertical or too large)
-                bool shouldResize = imageProcessed.Height > imageProcessed.Width || 
-                                   imageProcessed.Width > MaxWidth || 
-                                   imageProcessed.Height > MaxHeight;
-
-                if (shouldResize)
+                // Crop to standard aspect ratio (16:9)
+                var currentRatio = (double)imageProcessed.Width / imageProcessed.Height;
+                if (Math.Abs(currentRatio - TargetAspectRatio) > 0.01)
                 {
-                    // Calculate new dimensions maintaining aspect ratio
-                    var resizeOptions = new ResizeOptions
+                    if (currentRatio > TargetAspectRatio)
                     {
-                        Mode = ResizeMode.Max,
-                        Size = new Size(MaxWidth, MaxHeight)
-                    };
-                    
-                    imageProcessed.Mutate(x => x.Resize(resizeOptions));
+                        var newWidth = (int)(imageProcessed.Height * TargetAspectRatio);
+                        var startX = (imageProcessed.Width - newWidth) / 2;
+                        var cropRect = new Rectangle(startX, 0, newWidth, imageProcessed.Height);
+                        imageProcessed.Mutate(x => x.Crop(cropRect));
+                    }
+                    else
+                    {
+                        var newHeight = (int)(imageProcessed.Width / TargetAspectRatio);
+                        var startY = (imageProcessed.Height - newHeight) / 2;
+                        var cropRect = new Rectangle(0, startY, imageProcessed.Width, newHeight);
+                        imageProcessed.Mutate(x => x.Crop(cropRect));
+                    }
                 }
+
+                // Resize while maintaining aspect ratio
+                var resizeOptions = new ResizeOptions
+                {
+                    Mode = ResizeMode.Max,
+                    Size = new Size(MaxWidth, MaxHeight)
+                };
+
+                imageProcessed.Mutate(x => x.Resize(resizeOptions));
 
                 // Set JPEG compression options if it's a JPEG
                 if (fileExtension == ".jpg" || fileExtension == ".jpeg")

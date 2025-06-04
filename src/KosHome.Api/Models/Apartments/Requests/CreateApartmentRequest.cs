@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace KosHome.Api.Models.Apartments.Requests;
 
@@ -14,4 +16,5 @@ public record CreateApartmentRequest(
     int Bathrooms,
     int SquareMeters,
     double Latitude,
-    double Longitude); 
+    double Longitude,
+    IEnumerable<IFormFile>? Images);
