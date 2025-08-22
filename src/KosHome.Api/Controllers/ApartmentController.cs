@@ -9,6 +9,7 @@ using KosHome.Api.Models.Apartments.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using KosHome.Application.Apartments.CreateApartment;
+using KosHome.Domain.Common;
 using Microsoft.AspNetCore.Http;
 
 namespace KosHome.Api.Controllers;
@@ -30,6 +31,7 @@ public class ApartmentController : ControllerBase
     [ProducesResponseType(typeof(Ulid), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<IActionResult> Create([FromForm] CreateApartmentRequest request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new CreateApartmentCommand
