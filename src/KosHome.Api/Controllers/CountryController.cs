@@ -73,6 +73,7 @@ public class CountryController : ControllerBase
     [ProducesResponseType(typeof(Ulid), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> CreateCountry([FromBody] CreateCountryCommand command, CancellationToken cancellationToken = default)
     {
         var result = await _sender.Send(command, cancellationToken);
@@ -91,6 +92,7 @@ public class CountryController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> UpdateCountry([FromRoute] Ulid countryId, [FromBody] UpdateCountryCommand command, CancellationToken cancellationToken = default)
     {
         command.Id = countryId;
@@ -109,6 +111,7 @@ public class CountryController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeleteCountry([FromRoute] Ulid countryId, CancellationToken cancellationToken = default)
     {
         var command = new DeleteCountryCommand(countryId);

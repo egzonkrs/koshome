@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using KosHome.Domain.Abstractions;
 using Microsoft.AspNetCore.Http;
@@ -34,4 +35,12 @@ public sealed class UserContextAccessor : IUserContextAccessor
 
     /// <summary>Gets the email address.</summary>
     public string Email => _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
+
+    /// <summary>Gets the roles assigned to the current user.</summary>
+    public IEnumerable<string> Roles => _httpContextAccessor.HttpContext?.User.FindAll(ClaimTypes.Role).Select(c => c.Value) ?? [];
+
+    /// <summary>Determines whether the current user has the specified role.</summary>
+    /// <param name="role">The role to check.</param>
+    /// <returns><c>true</c> if the role exists; otherwise, <c>false</c>.</returns>
+    public bool HasRole(string role) => Roles.Contains(role, StringComparer.OrdinalIgnoreCase);
 }

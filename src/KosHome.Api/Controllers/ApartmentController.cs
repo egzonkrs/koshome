@@ -30,6 +30,7 @@ public class ApartmentController : ControllerBase
     [ProducesResponseType(typeof(Ulid), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Create([FromForm] CreateApartmentRequest request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new CreateApartmentCommand
