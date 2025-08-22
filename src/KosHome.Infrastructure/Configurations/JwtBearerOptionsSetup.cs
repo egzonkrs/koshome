@@ -23,7 +23,8 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
 
     public void Configure(string? name, JwtBearerOptions options)
     {
-        if (name is null or not JwtBearerDefaults.AuthenticationScheme)
+        var isJwtScheme = name is JwtBearerDefaults.AuthenticationScheme;
+        if (isJwtScheme is false)
         {
             return;
         }
@@ -35,11 +36,13 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
 
         options.Events ??= new JwtBearerEvents();
 
-        if (_authOptions.Cookies.UseCookies)
+        var shouldUseCookies = _authOptions.Cookies.UseCookies;
+        if (shouldUseCookies)
         {
             options.Events.OnMessageReceived = context =>
             {
-                if (context.Request.Cookies.TryGetValue(_authOptions.Cookies.Name, out var token))
+                var hasTokenCookie = context.Request.Cookies.TryGetValue(_authOptions.Cookies.Name, out var token);
+                if (hasTokenCookie)
                 {
                     context.Token = token;
                 }
@@ -50,43 +53,58 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
 
         options.Events.OnTokenValidated = context =>
         {
-            if (context.Principal?.Identity is ClaimsIdentity identity)
+            var hasClaimsIdentity = context.Principal?.Identity is ClaimsIdentity identity;
+            if (hasClaimsIdentity is false)
             {
-                var realmAccess = context.Principal.FindFirst("realm_access")?.Value;
-                if (!string.IsNullOrEmpty(realmAccess))
+                return System.Threading.Tasks.Task.CompletedTask;
+            }
+
+            var realmAccess = context.Principal.FindFirst("realm_access")?.Value;
+            var hasRealmAccess = !string.IsNullOrEmpty(realmAccess);
+            if (hasRealmAccess)
+            {
+                using var realmDocument = JsonDocument.Parse(realmAccess);
+                var hasRealmRoles = realmDocument.RootElement.TryGetProperty("roles", out var realmRoles);
+                if (hasRealmRoles)
                 {
-                    using var document = JsonDocument.Parse(realmAccess);
-                    if (document.RootElement.TryGetProperty("roles", out var realmRoles))
+                    foreach (var role in realmRoles.EnumerateArray())
                     {
-                        foreach (var role in realmRoles.EnumerateArray())
+                        var roleName = role.GetString();
+                        var hasRoleName = !string.IsNullOrWhiteSpace(roleName);
+                        if (hasRoleName)
                         {
-                            var roleName = role.GetString();
-                            if (!string.IsNullOrWhiteSpace(roleName))
-                            {
-                                identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
-                            }
+                            identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
                         }
                     }
                 }
+            }
 
-                var resourceAccess = context.Principal.FindFirst("resource_access")?.Value;
-                if (!string.IsNullOrEmpty(resourceAccess))
+            var resourceAccess = context.Principal.FindFirst("resource_access")?.Value;
+            var hasResourceAccess = !string.IsNullOrEmpty(resourceAccess);
+            if (hasResourceAccess is false)
+            {
+                return System.Threading.Tasks.Task.CompletedTask;
+            }
+
+            using var resourceDocument = JsonDocument.Parse(resourceAccess);
+            foreach (var client in resourceDocument.RootElement.EnumerateObject())
+            {
+                var hasClientRoles = client.Value.TryGetProperty("roles", out var clientRoles);
+                if (hasClientRoles is false)
                 {
-                    using var document = JsonDocument.Parse(resourceAccess);
-                    foreach (var client in document.RootElement.EnumerateObject())
+                    continue;
+                }
+
+                foreach (var role in clientRoles.EnumerateArray())
+                {
+                    var roleName = role.GetString();
+                    var hasRoleName = !string.IsNullOrWhiteSpace(roleName);
+                    if (hasRoleName is false)
                     {
-                        if (client.Value.TryGetProperty("roles", out var clientRoles))
-                        {
-                            foreach (var role in clientRoles.EnumerateArray())
-                            {
-                                var roleName = role.GetString();
-                                if (!string.IsNullOrWhiteSpace(roleName))
-                                {
-                                    identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
-                                }
-                            }
-                        }
+                        continue;
                     }
+
+                    identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
                 }
             }
 
