@@ -8,12 +8,25 @@ using KosHome.Infrastructure.Data.Abstractions;
 
 namespace KosHome.Infrastructure.Data.Repositories;
 
-public class ApartmentRepository : EfRepositoryBase<Apartment>, IApartmentRepository 
+/// <summary>
+/// Provides EF Core operations for Apartment.
+/// </summary>
+public sealed class ApartmentRepository : EfCoreRepository<Apartment>, IApartmentRepository 
 {
+    /// <summary>
+    /// Initializes a new instance of the ApartmentRepository class.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
     public ApartmentRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
     
+    /// <summary>
+    /// Gets an apartment by its title.
+    /// </summary>
+    /// <param name="title">The apartment title.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The apartment with the specified title.</returns>
     public Task<Apartment> GetByTitleAsync(Title title, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();

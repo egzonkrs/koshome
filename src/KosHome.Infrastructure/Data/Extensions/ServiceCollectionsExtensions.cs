@@ -1,7 +1,9 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using KosHome.Domain.Data.Abstractions;
 using KosHome.Infrastructure.Data.Abstractions;
+using KosHome.Infrastructure.Data.Models;
+using KosHome.Infrastructure.Data.Transactions;
+using KosHome.Infrastructure.Data.Interop.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -20,12 +22,18 @@ public static class ServiceCollectionExtensions
     /// <typeparam name="TContext">The Db Context.</typeparam>
     /// <returns>The same <see cref="IServiceCollection" /> so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when the <see cref="IServiceCollection"/> is not set.</exception>
-    public static IServiceCollection AddEfCoreUnitOfWork<TContext>([NotNull] this IServiceCollection services)
-        where TContext : DbContext
+    public static IServiceCollection AddEfCoreUnitOfWork<TContext>(this IServiceCollection services) where TContext : DbContext
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.TryAddScoped<IUnitOfWork, EfUnitOfWork<TContext>>();
+        services.TryAddScoped<ITransactionFactory, TransactionFactory>();
+        services.TryAddScoped<IUnitOfWork<TContext>, UnitOfWork<TContext>>();
+        
+        services.TryAddScoped<Domain.Data.Abstractions.IUnitOfWork>(provider => 
+        {
+            var infrastructureUow = provider.GetRequiredService<IUnitOfWork<TContext>>();
+            return new DomainUnitOfWorkAdapter<TContext>(infrastructureUow);
+        });
 
         return services;
     }
@@ -39,9 +47,9 @@ public static class ServiceCollectionExtensions
     /// <returns>The same <see cref="IServiceCollection"/> so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when the <see cref="IServiceCollection"/> is not set.</exception>
     public static IServiceCollection AddEfCoreRepository<TEntity, TImplementation>(
-        [NotNull] this IServiceCollection services)
-        where TEntity : DomainEntity, IEntity
-        where TImplementation : EfRepositoryBase<TEntity>
+        this IServiceCollection services)
+        where TEntity : DomainEntity, IEntity<Ulid>
+        where TImplementation : EfCoreRepository<TEntity>
     {
         return services.AddEfCoreRepository<TEntity, IRepository<TEntity>, TImplementation>();
     }
@@ -56,14 +64,13 @@ public static class ServiceCollectionExtensions
     /// <returns>The same <see cref="IServiceCollection"/> so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when the <see cref="IServiceCollection"/> is not set.</exception>
     public static IServiceCollection AddEfCoreRepository<TEntity, TService, TImplementation>(
-        [NotNull] this IServiceCollection services)
-        where TEntity : DomainEntity, IEntity
+        this IServiceCollection services)
+        where TEntity : DomainEntity, IEntity<Ulid>
         where TService : class, IRepository<TEntity>
-        where TImplementation : EfRepositoryBase<TEntity>, TService
+        where TImplementation : EfCoreRepository<TEntity>, TService
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        // services.AddQueryFilters();
         services.TryAddScoped<TService, TImplementation>();
 
         return services;

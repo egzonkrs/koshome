@@ -13,31 +13,50 @@ namespace KosHome.Infrastructure.Data.Repositories;
 /// <summary>
 /// Repository for apartment image entities.
 /// </summary>
-public sealed class ApartmentImageRepository : EfRepositoryBase<ApartmentImage>, IApartmentImageRepository
+public sealed class ApartmentImageRepository : EfCoreRepository<ApartmentImage>, IApartmentImageRepository
 {
-    private readonly DbSet<ApartmentImage> _dbSet;
-    
+    /// <summary>
+    /// Initializes a new instance of the ApartmentImageRepository class.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
     public ApartmentImageRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
-        _dbSet = dbContext.Set<ApartmentImage>();
     }
 
+    /// <summary>
+    /// Gets all apartment images for a specific apartment.
+    /// </summary>
+    /// <param name="apartmentId">The apartment identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A list of apartment images ordered by primary status and creation date.</returns>
     public async Task<IReadOnlyList<ApartmentImage>> GetByApartmentIdAsync(Ulid apartmentId, CancellationToken cancellationToken = default)
     {
-        return await _dbSet
+        return await DbSet
             .Where(ai => ai.ApartmentId == apartmentId)
             .OrderByDescending(ai => ai.IsPrimary)
             .ThenBy(ai => ai.CreatedAt)
             .ToListAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Gets the primary image for a specific apartment.
+    /// </summary>
+    /// <param name="apartmentId">The apartment identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The primary apartment image or null if not found.</returns>
     public async Task<ApartmentImage> GetPrimaryImageByApartmentIdAsync(Ulid apartmentId, CancellationToken cancellationToken = default)
     {
-        return await _dbSet
+        return await DbSet
             .Where(ai => ai.ApartmentId == apartmentId && ai.IsPrimary)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Sets the primary status of an apartment image.
+    /// </summary>
+    /// <param name="apartmentImageId">The apartment image identifier.</param>
+    /// <param name="isPrimary">Whether the image should be set as primary.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     public async Task SetPrimaryStatusAsync(Ulid apartmentImageId, bool isPrimary, CancellationToken cancellationToken = default)
     {
         var image = await GetByIdAsync(apartmentImageId, cancellationToken);
@@ -49,7 +68,7 @@ public sealed class ApartmentImageRepository : EfRepositoryBase<ApartmentImage>,
         // If setting to primary, first reset all other images from the same apartment
         if (isPrimary)
         {
-            var otherImages = await _dbSet
+            var otherImages = await DbSet
                 .Where(ai => ai.ApartmentId == image.ApartmentId && ai.Id != apartmentImageId)
                 .ToListAsync(cancellationToken);
 
