@@ -33,4 +33,16 @@ public interface IUserContextAccessor
     /// The User's Email.
     /// </summary>
     string Email { get; }
-} 
+
+    /// <summary>
+    /// The roles associated with the current user.
+    /// </summary>
+    IEnumerable<string> Roles { get; }
+
+    /// <summary>
+    /// Checks whether the current user possesses the specified role.
+    /// </summary>
+    /// <param name="role">The role to verify.</param>
+    /// <returns><c>true</c> if the user has the role; otherwise, <c>false</c>.</returns>
+    bool HasRole(string role);
+}

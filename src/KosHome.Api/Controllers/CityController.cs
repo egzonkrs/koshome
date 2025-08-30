@@ -13,6 +13,7 @@ using KosHome.Application.Cities.Create;
 using Microsoft.AspNetCore.Http;
 using KosHome.Application.Cities.Update;
 using KosHome.Application.Cities.Delete;
+using KosHome.Domain.Common;
 
 namespace KosHome.Api.Controllers;
 
@@ -73,6 +74,7 @@ public class CityController : ControllerBase
     [ProducesResponseType(typeof(Ulid), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<IActionResult> CreateCity([FromBody] CreateCityCommand command, CancellationToken cancellationToken = default)
     {
         var result = await _sender.Send(command, cancellationToken);
@@ -91,6 +93,7 @@ public class CityController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<IActionResult> UpdateCity([FromRoute] Ulid cityId, [FromBody] UpdateCityCommand command, CancellationToken cancellationToken = default)
     {
         command.Id = cityId;
@@ -109,6 +112,7 @@ public class CityController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [Authorize(Roles = UserRoles.Admin)]
     public async Task<IActionResult> DeleteCity([FromRoute] Ulid cityId, CancellationToken cancellationToken = default)
     {
         var command = new DeleteCityCommand(cityId);

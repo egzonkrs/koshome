@@ -1,4 +1,6 @@
 using System;
+using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -21,7 +23,8 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
 
     public void Configure(string? name, JwtBearerOptions options)
     {
-        if (name is null or not JwtBearerDefaults.AuthenticationScheme)
+        var isJwtScheme = name is JwtBearerDefaults.AuthenticationScheme;
+        if (isJwtScheme is false)
         {
             return;
         }
@@ -30,23 +33,84 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
         options.Audience = _authOptions.Keycloak.Audience;
         options.MetadataAddress = _authOptions.Keycloak.MetadataUrl;
         options.RequireHttpsMetadata = _authOptions.Keycloak.RequireHttpsMetadata;
-        
-        if (_authOptions.Cookies.UseCookies)
+
+        options.Events ??= new JwtBearerEvents();
+
+        var shouldUseCookies = _authOptions.Cookies.UseCookies;
+        if (shouldUseCookies)
         {
-            options.Events = new JwtBearerEvents
+            options.Events.OnMessageReceived = context =>
             {
-                OnMessageReceived = context =>
+                var hasTokenCookie = context.Request.Cookies.TryGetValue(_authOptions.Cookies.Name, out var token);
+                if (hasTokenCookie)
                 {
-                    if (context.Request.Cookies.TryGetValue(_authOptions.Cookies.Name, out var token))
-                    {
-                        context.Token = token;
-                    }
-                    
-                    return System.Threading.Tasks.Task.CompletedTask;
+                    context.Token = token;
                 }
+
+                return System.Threading.Tasks.Task.CompletedTask;
             };
         }
-        
+
+        options.Events.OnTokenValidated = context =>
+        {
+            var hasClaimsIdentity = context.Principal?.Identity is ClaimsIdentity identity;
+            if (hasClaimsIdentity is false)
+            {
+                return System.Threading.Tasks.Task.CompletedTask;
+            }
+
+            var realmAccess = context.Principal.FindFirst("realm_access")?.Value;
+            var hasRealmAccess = !string.IsNullOrEmpty(realmAccess);
+            if (hasRealmAccess)
+            {
+                using var realmDocument = JsonDocument.Parse(realmAccess);
+                var hasRealmRoles = realmDocument.RootElement.TryGetProperty("roles", out var realmRoles);
+                if (hasRealmRoles)
+                {
+                    foreach (var role in realmRoles.EnumerateArray())
+                    {
+                        var roleName = role.GetString();
+                        var hasRoleName = !string.IsNullOrWhiteSpace(roleName);
+                        if (hasRoleName)
+                        {
+                            identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
+                        }
+                    }
+                }
+            }
+
+            var resourceAccess = context.Principal.FindFirst("resource_access")?.Value;
+            var hasResourceAccess = !string.IsNullOrEmpty(resourceAccess);
+            if (hasResourceAccess is false)
+            {
+                return System.Threading.Tasks.Task.CompletedTask;
+            }
+
+            using var resourceDocument = JsonDocument.Parse(resourceAccess);
+            foreach (var client in resourceDocument.RootElement.EnumerateObject())
+            {
+                var hasClientRoles = client.Value.TryGetProperty("roles", out var clientRoles);
+                if (hasClientRoles is false)
+                {
+                    continue;
+                }
+
+                foreach (var role in clientRoles.EnumerateArray())
+                {
+                    var roleName = role.GetString();
+                    var hasRoleName = !string.IsNullOrWhiteSpace(roleName);
+                    if (hasRoleName is false)
+                    {
+                        continue;
+                    }
+
+                    identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
+                }
+            }
+
+            return System.Threading.Tasks.Task.CompletedTask;
+        };
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = !string.IsNullOrEmpty(_authOptions.Keycloak.Issuer),
@@ -56,6 +120,7 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
             ValidateIssuerSigningKey = true,
+            RoleClaimType = ClaimTypes.Role,
         };
     }
 }
