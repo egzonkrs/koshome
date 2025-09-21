@@ -40,58 +40,57 @@ public sealed class CreateApartmentCommandHandler : IRequestHandler<CreateApartm
 
     public async Task<Result<Ulid>> Handle(CreateApartmentCommand request, CancellationToken cancellationToken)
     {
-        var title = new Title(request.Title);
-        var description = new Description(request.Description);
-        var price = new Price(request.Price);
-        var address = new Address(request.Address);
-
-        var apartment = Apartment.Create(
-            _userContextAccessor.AppUserId,
-            title,
-            description,
-            price,
-            Enum.Parse<ListingType>(request.ListingType),
-            Ulid.NewUlid(), // "request.PropertyType",
-            address,
-            request.CityId,
-            request.Bedrooms,
-            request.Bathrooms,
-            request.SquareMeters,
-            request.Latitude,
-            request.Longitude);
-
-        var apartmentId = await _apartmentRepository.InsertAsync(apartment, cancellationToken);
-        var isApartmentSaved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
-
-        if (!isApartmentSaved)
+        // Example using transaction scope for complex operations
+        return await _unitOfWork.ExecuteTransactionAsync(async scope =>
         {
-            return Result.Fail(ApartmentsErrors.NoChangesDetected());
-        }
+            var title = new Title(request.Title);
+            var description = new Description(request.Description);
+            var price = new Price(request.Price);
+            var address = new Address(request.Address);
 
-        // Process images if provided
-        if (request.Images != null && request.Images.Any())
-        {
-            var createImagesCommand = new CreateApartmentImageCommand
+            var apartment = Apartment.Create(
+                _userContextAccessor.AppUserId,
+                title,
+                description,
+                price,
+                Enum.Parse<ListingType>(request.ListingType),
+                Ulid.NewUlid(), // "request.PropertyType",
+                address,
+                request.CityId,
+                request.Bedrooms,
+                request.Bathrooms,
+                request.SquareMeters,
+                request.Latitude,
+                request.Longitude);
+
+            var savedApartment = await _apartmentRepository.AddAsync(apartment, cancellationToken);
+            var apartmentId = savedApartment.Id;
+            var isApartmentSaved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
+
+            if (!isApartmentSaved)
             {
-                ApartmentId = apartmentId,
-                Images = request.Images
-            };
-
-            var imagesResult = await _mediator.Send(createImagesCommand, cancellationToken);
-
-            if (imagesResult.IsFailed)
-            {
-                return Result.Fail(imagesResult.Errors);
+                return Result.Fail(ApartmentsErrors.NoChangesDetected());
             }
-        }
 
-        // scope.Complete();
-        return Result.Ok(apartmentId);
+            // Process images if provided
+            if (request.Images != null && request.Images.Any())
+            {
+                var createImagesCommand = new CreateApartmentImageCommand
+                {
+                    ApartmentId = apartmentId,
+                    Images = request.Images
+                };
 
-        // return await _unitOfWork.ExecuteTransactionAsync(async scope =>
-        // {
-        //     
-        // });
+                var imagesResult = await _mediator.Send(createImagesCommand, cancellationToken);
+
+                if (imagesResult.IsFailed)
+                {
+                    return Result.Fail(imagesResult.Errors);
+                }
+            }
+
+            return Result.Ok(apartmentId);
+        });
     }
     
     //

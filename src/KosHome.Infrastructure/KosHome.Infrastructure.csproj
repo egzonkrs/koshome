@@ -22,6 +22,8 @@
         <PackageReference Include="Refit" />
         <PackageReference Include="Refit.HttpClientFactory" />
         <PackageReference Include="SixLabors.ImageSharp" />
+        <PackageReference Include="Ardalis.Specification" />
+        <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
     </ItemGroup>
 
     <ItemGroup>

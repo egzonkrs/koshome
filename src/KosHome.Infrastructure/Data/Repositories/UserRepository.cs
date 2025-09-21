@@ -1,26 +1,30 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Ardalis.Specification.EntityFrameworkCore;
+using KosHome.Application.Users.Specifications;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Users;
 using KosHome.Domain.ValueObjects.Users;
-using KosHome.Infrastructure.Data.Abstractions;
 
 namespace KosHome.Infrastructure.Data.Repositories;
 
-
 /// <summary>
-/// Provides EF Core operations for City.
+/// User repository implementation using Ardalis.Specification.
 /// </summary>
-public sealed class UserRepository : EfRepositoryBase<User>, IUserRepository
+internal sealed class UserRepository : RepositoryBase<User>, IUserRepository
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserRepository"/> class.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
     public UserRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
 
-    public Task<User> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<User> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var specification = new UserByEmailSpecification(email);
+        return await FirstOrDefaultAsync(specification, cancellationToken);
     }
 }

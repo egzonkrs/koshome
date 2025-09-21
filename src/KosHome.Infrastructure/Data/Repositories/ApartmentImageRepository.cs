@@ -1,43 +1,43 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ardalis.Specification.EntityFrameworkCore;
+using KosHome.Application.ApartmentImages.Specifications;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.ApartmentImages;
-using KosHome.Infrastructure.Data.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace KosHome.Infrastructure.Data.Repositories;
 
 /// <summary>
-/// Repository for apartment image entities.
+/// Apartment image repository implementation using Ardalis.Specification.
 /// </summary>
-public sealed class ApartmentImageRepository : EfRepositoryBase<ApartmentImage>, IApartmentImageRepository
+internal sealed class ApartmentImageRepository : RepositoryBase<ApartmentImage>, IApartmentImageRepository
 {
-    private readonly DbSet<ApartmentImage> _dbSet;
-    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ApartmentImageRepository"/> class.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
     public ApartmentImageRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
-        _dbSet = dbContext.Set<ApartmentImage>();
     }
 
+    /// <inheritdoc />
     public async Task<IReadOnlyList<ApartmentImage>> GetByApartmentIdAsync(Ulid apartmentId, CancellationToken cancellationToken = default)
     {
-        return await _dbSet
-            .Where(ai => ai.ApartmentId == apartmentId)
-            .OrderByDescending(ai => ai.IsPrimary)
-            .ThenBy(ai => ai.CreatedAt)
-            .ToListAsync(cancellationToken);
+        var specification = new ApartmentImagesByApartmentIdSpecification(apartmentId);
+        var results = await ListAsync(specification, cancellationToken);
+        return results.AsReadOnly();
     }
 
+    /// <inheritdoc />
     public async Task<ApartmentImage> GetPrimaryImageByApartmentIdAsync(Ulid apartmentId, CancellationToken cancellationToken = default)
     {
-        return await _dbSet
-            .Where(ai => ai.ApartmentId == apartmentId && ai.IsPrimary)
-            .FirstOrDefaultAsync(cancellationToken);
+        var specification = new PrimaryApartmentImageByApartmentIdSpecification(apartmentId);
+        return await FirstOrDefaultAsync(specification, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task SetPrimaryStatusAsync(Ulid apartmentImageId, bool isPrimary, CancellationToken cancellationToken = default)
     {
         var image = await GetByIdAsync(apartmentImageId, cancellationToken);
@@ -49,9 +49,8 @@ public sealed class ApartmentImageRepository : EfRepositoryBase<ApartmentImage>,
         // If setting to primary, first reset all other images from the same apartment
         if (isPrimary)
         {
-            var otherImages = await _dbSet
-                .Where(ai => ai.ApartmentId == image.ApartmentId && ai.Id != apartmentImageId)
-                .ToListAsync(cancellationToken);
+            var otherImagesSpec = new NonPrimaryApartmentImagesByApartmentIdSpecification(image.ApartmentId, apartmentImageId);
+            var otherImages = await ListAsync(otherImagesSpec, cancellationToken);
 
             foreach (var otherImage in otherImages)
             {
@@ -65,4 +64,5 @@ public sealed class ApartmentImageRepository : EfRepositoryBase<ApartmentImage>,
         // Update the primary status of the target image
         image.SetPrimaryStatus(isPrimary);
     }
+
 } 

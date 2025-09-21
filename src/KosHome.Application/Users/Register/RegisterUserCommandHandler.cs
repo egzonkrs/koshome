@@ -48,7 +48,7 @@ public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCom
         var isUserSaved = false;
         await _unitOfWork.ExecuteTransactionAsync(async x =>
         {
-            await _userRepository.InsertAsync(user, cancellationToken);
+            await _userRepository.AddAsync(user, cancellationToken);
             isUserSaved = await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
             x.Complete();
         });

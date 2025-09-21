@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentResults;
+using KosHome.Application.Cities.Specifications;
 using KosHome.Application.Mappers;
 using KosHome.Domain.Data.Repositories;
 using MediatR;
@@ -10,7 +11,7 @@ using MediatR;
 namespace KosHome.Application.Cities.GetCities;
 
 /// <summary>
-/// Handles the <see cref="GetAllCitiesQuery"/>.
+/// Handles the <see cref="GetAllCitiesQuery"/> using Ardalis specifications.
 /// </summary>
 public sealed class GetAllCitiesQueryHandler : IRequestHandler<GetAllCitiesQuery, Result<IEnumerable<CityResponse>>>
 {
@@ -33,7 +34,8 @@ public sealed class GetAllCitiesQueryHandler : IRequestHandler<GetAllCitiesQuery
     /// <returns>A result containing a list of city responses or an error.</returns>
     public async Task<Result<IEnumerable<CityResponse>>> Handle(GetAllCitiesQuery request, CancellationToken cancellationToken)
     {
-        var cities = await _cityRepository.GetAllAsync(cancellationToken: cancellationToken);
+        var specification = new AllCitiesSpecification();
+        var cities = await _cityRepository.ListAsync(specification, cancellationToken);
         var cityResponses = cities.Select(city => city.ToResponse());
         return Result.Ok(cityResponses);
     }

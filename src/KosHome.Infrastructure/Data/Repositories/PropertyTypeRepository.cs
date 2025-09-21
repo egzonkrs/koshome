@@ -1,34 +1,40 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ardalis.Specification.EntityFrameworkCore;
+using KosHome.Application.PropertyTypes.Specifications;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.PropertyTypes;
-using KosHome.Infrastructure.Data.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace KosHome.Infrastructure.Data.Repositories;
 
-public class PropertyTypeRepository : EfRepositoryBase<PropertyType>, IPropertyTypeRepository
+/// <summary>
+/// Property type repository implementation using Ardalis.Specification.
+/// </summary>
+internal sealed class PropertyTypeRepository : RepositoryBase<PropertyType>, IPropertyTypeRepository
 {
-    private readonly DbSet<PropertyType> _dbSet;
-    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PropertyTypeRepository"/> class.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
     public PropertyTypeRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
-        _dbSet = dbContext.Set<PropertyType>();
     }
 
-    public Task<PropertyType> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<PropertyType> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
-        return _dbSet
-            .Where(pt => pt.Name == name)
-            .FirstOrDefaultAsync(cancellationToken);
+        var specification = new PropertyTypeByNameSpecification(name);
+        return await FirstOrDefaultAsync(specification, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<IReadOnlyList<PropertyType>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _dbSet
-            .OrderBy(pt => pt.Name)
-            .ToListAsync(cancellationToken);
+        var specification = new AllPropertyTypesSpecification();
+        var results = await ListAsync(specification, cancellationToken);
+        return results.AsReadOnly();
     }
+
 } 

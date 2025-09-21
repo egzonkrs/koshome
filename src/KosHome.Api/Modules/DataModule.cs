@@ -1,28 +1,32 @@
 using System;
 using KosHome.Domain.Abstractions;
-using KosHome.Domain.Data.Repositories;
-using KosHome.Domain.Entities.Cities;
-using KosHome.Domain.Entities.Countries;
 using KosHome.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using KosHome.Infrastructure.Data.Extensions;
-using KosHome.Infrastructure.Data.Repositories;
 using KosHome.Infrastructure.Images.Services;
 using KosHome.Application.Abstractions.Images.Services;
 
 namespace KosHome.Api.Modules;
 
+/// <summary>
+/// Module for configuring data access with Ardalis repositories.
+/// </summary>
 public sealed class DataModule : IModule
 {
     private readonly IConfiguration _configuration;
     
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DataModule"/> class.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
     public DataModule(IConfiguration configuration)
     {
         _configuration = configuration;
     }
     
+    /// <inheritdoc />
     public void Load(IServiceCollection services)
     {
         var connectionString = _configuration.GetConnectionString("DefaultConnection")
@@ -33,14 +37,9 @@ public sealed class DataModule : IModule
             opt.UseNpgsql(connectionString);
         });
         
-        services.AddEfCoreUnitOfWork<ApplicationDbContext>();
-        services.AddEfCoreRepository<City, ICityRepository, CityRepository>();
-        services.AddEfCoreRepository<Country, ICountryRepository, CountryRepository>();
+        services.AddUnitOfWork();
+        services.AddEfCoreRepositories();
         
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IApartmentRepository, ApartmentRepository>();
-        services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
-        services.AddScoped<IApartmentImageRepository, ApartmentImageRepository>();
         services.AddScoped<IApartmentImageService, ApartmentImageService>();
     }
 }

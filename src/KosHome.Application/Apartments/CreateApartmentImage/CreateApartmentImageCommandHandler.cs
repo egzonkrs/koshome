@@ -64,8 +64,8 @@ public sealed class CreateApartmentImageCommandHandler : IRequestHandler<CreateA
             var imageUrl = new ImageUrl(imageUrls[i]);
             var apartmentImage = ApartmentImage.Create(request.ApartmentId, imageUrl, isPrimary);
             
-            var imageId = await _apartmentImageRepository.InsertAsync(apartmentImage, cancellationToken);
-            imageIds.Add(imageId);
+            var savedImage = await _apartmentImageRepository.AddAsync(apartmentImage, cancellationToken);
+            imageIds.Add(savedImage.Id);
         }
 
         var changes = await _unitOfWork.SaveChangesAsync(cancellationToken);
