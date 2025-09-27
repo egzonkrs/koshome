@@ -1,19 +1,19 @@
 using MediatR;
-using System.Linq;
 using FluentResults;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using KosHome.Application.Apartments.Common;
 using KosHome.Application.Apartments.Specifications;
+using KosHome.Application.Mappers;
+using KosHome.Domain.Common.Pagination;
 using KosHome.Domain.Data.Repositories;
-using KosHome.Domain.Entities.Apartments;
 
 namespace KosHome.Application.Apartments.GetApartments;
 
 /// <summary>
-/// Handler for getting apartments using Ardalis specifications.
+/// Handler for getting apartments with enhanced pagination and filtering support.
 /// </summary>
-public sealed class GetApartmentsQueryHandler : IRequestHandler<GetApartmentsQuery, Result<List<Apartment>>>
+public sealed class GetApartmentsQueryHandler : IRequestHandler<GetApartmentsQuery, Result<PaginatedResult<ApartmentResponse>>>
 {
     private readonly IApartmentRepository _apartmentRepository;
 
@@ -27,10 +27,17 @@ public sealed class GetApartmentsQueryHandler : IRequestHandler<GetApartmentsQue
     }
 
     /// <inheritdoc />
-    public async Task<Result<List<Apartment>>> Handle(GetApartmentsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedResult<ApartmentResponse>>> Handle(GetApartmentsQuery request, CancellationToken cancellationToken)
     {
-        var specification = new ApartmentsWithPaginationSpecification();
-        var allApartments = await _apartmentRepository.ListAsync(specification, cancellationToken);
-        return Result.Ok(allApartments.ToList());
+        var specification = new ApartmentsPaginationSpecification(
+            request.PaginationRequest,
+            request.CityId,
+            request.MinPrice,
+            request.MaxPrice,
+            request.SearchTerm);
+            
+        var paginatedApartments = await _apartmentRepository.GetPaginatedAsync(specification, cancellationToken);
+        var paginatedResponse = paginatedApartments.Map(apartment => apartment.ToResponse());
+        return Result.Ok(paginatedResponse);
     }
 }
