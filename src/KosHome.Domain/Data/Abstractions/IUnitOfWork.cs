@@ -1,12 +1,12 @@
 using System;
 using System.Threading;
-using System.Transactions;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace KosHome.Domain.Data.Abstractions;
 
 /// <summary>
-/// The Unit of Work.
+/// The Unit of Work for application layer usage.
 /// </summary>
 public interface IUnitOfWork
 {
