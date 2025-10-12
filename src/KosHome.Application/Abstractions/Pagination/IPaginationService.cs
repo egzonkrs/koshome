@@ -10,10 +10,9 @@ namespace KosHome.Application.Abstractions.Pagination;
 
 public interface IPaginationService
 {
-    Task<Result<PaginatedResult<T>>> GetPaginatedAsync<T>(
-        IRepositoryBase<T> repository,
-        IPaginationSpecification<T> specification,
+    Task<Result<PaginatedResult<TEntity>>> GetPaginatedAsync<TEntity>(
+        IRepositoryBase<TEntity> repository,
+        IPaginationSpecification<TEntity> specification,
         CancellationToken cancellationToken = default)
-        where T : class, IEntity<Ulid>;
+        where TEntity : class, IEntity<Ulid>;
 }
-
