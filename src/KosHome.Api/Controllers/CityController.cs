@@ -36,9 +36,7 @@ public class CityController : ControllerBase
     /// <summary>
     /// Gets cities with pagination and filtering support.
     /// </summary>
-    /// <param name="paginationRequest">The pagination parameters.</param>
-    /// <param name="countryId">Optional country filter.</param>
-    /// <param name="searchTerm">Optional search term for city name.</param>
+    /// <param name="request">The filter and pagination request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A paginated list of cities.</returns>
     [HttpGet]
@@ -46,17 +44,12 @@ public class CityController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<PaginatedResponse<CityResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAllCities(
-        [FromQuery] Models.Common.PaginationRequest paginationRequest,
-        [FromQuery] Ulid? countryId = null,
-        [FromQuery] string? searchTerm = null,
-        CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetAllCities([FromQuery] Models.Cities.CityFilterRequest request, CancellationToken cancellationToken = default)
     {
         var query = new GetAllCitiesQuery
         {
-            PaginationRequest = paginationRequest.ToDomain(),
-            CountryId = countryId,
-            SearchTerm = searchTerm
+            PaginationRequest = request.ToDomain(),
+            CountryId = request.CountryId
         };
 
         var result = await _sender.Send(query, cancellationToken);

@@ -1,11 +1,13 @@
 using KosHome.Api.Extensions.Web.Versioning;
+using KosHome.Application.Abstractions.Pagination;
 using KosHome.Application.Cities.GetCities;
+using KosHome.Application.Cities.Update;
+using KosHome.Application.Common.Behaviors;
+using KosHome.Application.Common.Services;
 using KosHome.Domain.Abstractions;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
-using KosHome.Application.Cities.Update;
-using KosHome.Application.Common.Behaviors;
 
 namespace KosHome.Api.Modules;
 
@@ -19,6 +21,8 @@ public sealed class CoreModule : IModule
             cfg.RegisterServicesFromAssembly(typeof(GetCityById).Assembly);
             cfg.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
         });
+        
+        services.AddScoped<IPaginationService, PaginationService>();
         
         services.AddApiExplorerVersioning();
         services.AddValidatorsFromAssembly(typeof(UpdateCityCommandValidator).Assembly);

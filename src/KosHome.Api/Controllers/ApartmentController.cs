@@ -36,11 +36,7 @@ public class ApartmentController : ControllerBase
     /// <summary>
     /// Gets apartments with pagination and filtering support.
     /// </summary>
-    /// <param name="paginationRequest">The pagination parameters.</param>
-    /// <param name="cityId">Optional city filter.</param>
-    /// <param name="minPrice">Optional minimum price filter.</param>
-    /// <param name="maxPrice">Optional maximum price filter.</param>
-    /// <param name="searchTerm">Optional search term.</param>
+    /// <param name="request">The filter and pagination request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A paginated list of apartments.</returns>
     [HttpGet]
@@ -48,21 +44,14 @@ public class ApartmentController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<PaginatedResponse<ApartmentResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetApartments(
-        [FromQuery] Models.Common.PaginationRequest paginationRequest,
-        [FromQuery] Ulid? cityId = null,
-        [FromQuery] decimal? minPrice = null,
-        [FromQuery] decimal? maxPrice = null,
-        [FromQuery] string? searchTerm = null,
-        CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetApartments([FromQuery] Models.Apartments.ApartmentFilterRequest request, CancellationToken cancellationToken = default)
     {
         var query = new GetApartmentsQuery
         {
-            PaginationRequest = paginationRequest.ToDomain(),
-            CityId = cityId,
-            MinPrice = minPrice,
-            MaxPrice = maxPrice,
-            SearchTerm = searchTerm
+            PaginationRequest = request.ToDomain(),
+            CityId = request.CityId,
+            MinPrice = request.MinPrice,
+            MaxPrice = request.MaxPrice
         };
 
         var result = await _mediator.Send(query, cancellationToken);
