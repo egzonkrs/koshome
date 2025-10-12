@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using KosHome.Domain.Data.Abstractions;
+using Ardalis.Specification;
 using KosHome.Domain.Entities.PropertyTypes;
 
 namespace KosHome.Domain.Data.Repositories;
@@ -9,7 +9,7 @@ namespace KosHome.Domain.Data.Repositories;
 /// <summary>
 /// Interface for the repository handling property type entities.
 /// </summary>
-public interface IPropertyTypeRepository : IRepository<PropertyType>
+public interface IPropertyTypeRepository : IRepositoryBase<PropertyType>
 {
     /// <summary>
     /// Gets a property type by its name.

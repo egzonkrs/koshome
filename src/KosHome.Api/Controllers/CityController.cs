@@ -4,11 +4,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using KosHome.Api.Extensions;
+using KosHome.Api.Models;
+using KosHome.Api.Models.Common;
+using KosHome.Domain.Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using KosHome.Application.Cities.GetCities;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using KosHome.Api.Extensions.Controller;
+using KosHome.Api.Extensions.Common;
 using KosHome.Application.Cities.Create;
 using Microsoft.AspNetCore.Http;
 using KosHome.Application.Cities.Update;
@@ -31,19 +35,26 @@ public class CityController : ControllerBase
     }
 
     /// <summary>
-    /// Gets all cities.
+    /// Gets cities with pagination and filtering support.
     /// </summary>
+    /// <param name="request">The filter and pagination request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>An <see cref="IActionResult"/> containing the list of cities or an error.</returns>
+    /// <returns>A paginated list of cities.</returns>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<CityResponse>), StatusCodes.Status200OK)]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(ApiResponse<PaginatedResponse<CityResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetAllCities(CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetAllCities([FromQuery] Models.Cities.CityFilterRequest request, CancellationToken cancellationToken = default)
     {
-        var query = new GetAllCitiesQuery();
+        var query = new GetAllCitiesQuery
+        {
+            PaginationRequest = request.ToDomain(),
+            CountryId = request.CountryId
+        };
+
         var result = await _sender.Send(query, cancellationToken);
-        return this.ToActionResult(result);
+        return this.ToPaginatedActionResult(result);
     }
 
     /// <summary>

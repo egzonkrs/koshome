@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentResults;
+using KosHome.Application.Countries.Specifications;
 using KosHome.Application.Mappers;
 using KosHome.Domain.Data.Repositories;
 using MediatR;
@@ -10,7 +11,7 @@ using MediatR;
 namespace KosHome.Application.Countries.GetCountries;
 
 /// <summary>
-/// Handles the <see cref="GetAllCountriesQuery"/>.
+/// Handles the <see cref="GetAllCountriesQuery"/> using Ardalis specifications.
 /// </summary>
 public sealed class GetAllCountriesQueryHandler : IRequestHandler<GetAllCountriesQuery, Result<IEnumerable<CountryResponse>>>
 {
@@ -33,7 +34,8 @@ public sealed class GetAllCountriesQueryHandler : IRequestHandler<GetAllCountrie
     /// <returns>A result containing a list of country responses or an error.</returns>
     public async Task<Result<IEnumerable<CountryResponse>>> Handle(GetAllCountriesQuery request, CancellationToken cancellationToken)
     {
-        var countries = await _countryRepository.GetAllAsync(cancellationToken: cancellationToken);
+        var specification = new AllCountriesSpecification();
+        var countries = await _countryRepository.ListAsync(specification, cancellationToken);
         var countryResponses = countries.Select(country => country.ToResponse());
         return Result.Ok(countryResponses);
     }

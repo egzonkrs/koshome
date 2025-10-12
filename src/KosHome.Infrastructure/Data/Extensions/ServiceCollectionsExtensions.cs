@@ -1,77 +1,49 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using KosHome.Domain.Data.Abstractions;
-using KosHome.Infrastructure.Data.Abstractions;
-using KosHome.Infrastructure.Data.Models;
-using KosHome.Infrastructure.Data.Transactions;
-using KosHome.Infrastructure.Data.Interop.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
+using KosHome.Domain.Data.Repositories;
+using KosHome.Infrastructure.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace KosHome.Infrastructure.Data.Extensions;
 
 /// <summary>
-/// The <see cref="IServiceCollection" /> Extensions.
+/// The <see cref="IServiceCollection" /> Extensions for Ardalis-based repositories.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds the Entity Framework Core Unit of Work for a Context.
+    /// Adds the Unit of Work implementation with transaction scope support.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
-    /// <typeparam name="TContext">The Db Context.</typeparam>
     /// <returns>The same <see cref="IServiceCollection" /> so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when the <see cref="IServiceCollection"/> is not set.</exception>
-    public static IServiceCollection AddEfCoreUnitOfWork<TContext>(this IServiceCollection services) where TContext : DbContext
+    public static IServiceCollection AddUnitOfWork([NotNull] this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.TryAddScoped<ITransactionFactory, TransactionFactory>();
-        services.TryAddScoped<IUnitOfWork<TContext>, UnitOfWork<TContext>>();
-        
-        services.TryAddScoped<Domain.Data.Abstractions.IUnitOfWork>(provider => 
-        {
-            var infrastructureUow = provider.GetRequiredService<IUnitOfWork<TContext>>();
-            return new DomainUnitOfWorkAdapter<TContext>(infrastructureUow);
-        });
+        services.TryAddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
         return services;
     }
     
     /// <summary>
-    /// Adds an Entity Framework Core Repository for an Entity.
+    /// Adds all Ardalis-based repositories to the service collection.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
-    /// <typeparam name="TEntity">The Entity.</typeparam>
-    /// <typeparam name="TImplementation">The type of the implementation to use.</typeparam>
     /// <returns>The same <see cref="IServiceCollection"/> so that multiple calls can be chained.</returns>
     /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when the <see cref="IServiceCollection"/> is not set.</exception>
-    public static IServiceCollection AddEfCoreRepository<TEntity, TImplementation>(
-        this IServiceCollection services)
-        where TEntity : DomainEntity, IEntity<Ulid>
-        where TImplementation : EfCoreRepository<TEntity>
-    {
-        return services.AddEfCoreRepository<TEntity, IRepository<TEntity>, TImplementation>();
-    }
-    
-    /// <summary>
-    /// Adds an Entity Framework Core Repository for an Entity.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
-    /// <typeparam name="TEntity">The Entity.</typeparam>
-    /// <typeparam name="TService">The type of the service to add.</typeparam>
-    /// <typeparam name="TImplementation">The type of the implementation to use.</typeparam>
-    /// <returns>The same <see cref="IServiceCollection"/> so that multiple calls can be chained.</returns>
-    /// <exception cref="ArgumentNullException">Throws an <see cref="ArgumentNullException"/> when the <see cref="IServiceCollection"/> is not set.</exception>
-    public static IServiceCollection AddEfCoreRepository<TEntity, TService, TImplementation>(
-        this IServiceCollection services)
-        where TEntity : DomainEntity, IEntity<Ulid>
-        where TService : class, IRepository<TEntity>
-        where TImplementation : EfCoreRepository<TEntity>, TService
+    public static IServiceCollection AddEfCoreRepositories([NotNull] this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.TryAddScoped<TService, TImplementation>();
+        services.TryAddScoped<IApartmentRepository, ApartmentRepository>();
+        services.TryAddScoped<IApartmentImageRepository, ApartmentImageRepository>();
+        services.TryAddScoped<ICityRepository, CityRepository>();
+        services.TryAddScoped<ICountryRepository, CountryRepository>();
+        services.TryAddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
+        services.TryAddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

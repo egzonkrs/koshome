@@ -1,19 +1,23 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Ardalis.Specification.EntityFrameworkCore;
 using KosHome.Domain.Data.Repositories;
 using KosHome.Domain.Entities.Countries;
-using KosHome.Infrastructure.Data.Abstractions;
 
 namespace KosHome.Infrastructure.Data.Repositories;
 
 /// <summary>
-/// Provides EF Core operations for Country.
+/// Country repository implementation using Ardalis.Specification.
 /// </summary>
-public sealed class CountryRepository : EfCoreRepository<Country>, ICountryRepository
+internal sealed class CountryRepository : RepositoryBase<Country>, ICountryRepository
 {
     /// <summary>
-    /// Initializes a new instance of the CountryRepository class.
+    /// Initializes a new instance of the <see cref="CountryRepository"/> class.
     /// </summary>
     /// <param name="dbContext">The database context.</param>
     public CountryRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
+
 } 

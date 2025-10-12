@@ -1,16 +1,15 @@
 using System.Threading;
 using System.Threading.Tasks;
-using KosHome.Domain.Data.Abstractions;
+using Ardalis.Specification;
 using KosHome.Domain.Entities.Apartments;
 using KosHome.Domain.ValueObjects.Apartments;
-using KosHome.Domain.ValueObjects.Cities;
 
 namespace KosHome.Domain.Data.Repositories;
 
 /// <summary>
-/// 
+/// Defines database operations for Apartment.
 /// </summary>
-public interface IApartmentRepository: IRepository<Apartment>
+public interface IApartmentRepository : IRepositoryBase<Apartment>
 {
     /// <summary>
     /// 

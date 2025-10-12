@@ -133,7 +133,7 @@ public sealed class ApartmentImageService : IApartmentImageService
     public async Task<Result<List<string>>> ProcessApartmentImagesAsync(Ulid apartmentId, IEnumerable<IFormFile> images, CancellationToken cancellationToken)
     {
         var imageList = images.ToList();
-        if (!imageList.Any())
+        if (imageList.Count is 0)
         {
             return Result.Fail(ApartmentImagesErrors.NoImageProvided());
         }
@@ -141,9 +141,9 @@ public sealed class ApartmentImageService : IApartmentImageService
         var results = new List<string>();
         var errors = new List<IError>();
 
-        for (int i = 0; i < imageList.Count; i++)
+        for (var i = 0; i < imageList.Count; i++)
         {
-            var isPrimary = i == 0; // First image is always primary
+            var isPrimary = i is 0; // First image is always primary
             var result = await ProcessApartmentImageAsync(apartmentId, imageList[i], isPrimary, cancellationToken);
             
             if (result.IsSuccess)

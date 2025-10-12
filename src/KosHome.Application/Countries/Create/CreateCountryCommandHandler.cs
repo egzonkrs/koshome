@@ -57,7 +57,7 @@ public sealed class CreateCountryCommandHandler : IRequestHandler<CreateCountryC
             
             var country = Country.Create(countryName, alpha3Code);
             
-            await _countryRepository.InsertAsync(country, cancellationToken);
+            await _countryRepository.AddAsync(country, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             
             return Result.Ok(country.Id);

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using KosHome.Domain.Data.Abstractions;
+using Ardalis.Specification;
 using KosHome.Domain.Entities.ApartmentImages;
 
 namespace KosHome.Domain.Data.Repositories;
@@ -10,7 +10,7 @@ namespace KosHome.Domain.Data.Repositories;
 /// <summary>
 /// Interface for the repository handling apartment image entities.
 /// </summary>
-public interface IApartmentImageRepository : IRepository<ApartmentImage>
+public interface IApartmentImageRepository : IRepositoryBase<ApartmentImage>
 {
     /// <summary>
     /// Gets all images for a specific apartment.
