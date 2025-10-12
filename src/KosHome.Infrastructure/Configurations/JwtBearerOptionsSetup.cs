@@ -53,8 +53,7 @@ public sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOpti
 
         options.Events.OnTokenValidated = context =>
         {
-            var hasClaimsIdentity = context.Principal?.Identity is ClaimsIdentity identity;
-            if (hasClaimsIdentity is false)
+            if (context.Principal?.Identity is not ClaimsIdentity identity)
             {
                 return System.Threading.Tasks.Task.CompletedTask;
             }

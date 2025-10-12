@@ -31,6 +31,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Data\Abstractions\" />
+      <Folder Include="Data\Models\" />
       <Folder Include="Migrations\" />
     </ItemGroup>
 

@@ -4,11 +4,17 @@ using Asp.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using KosHome.Api.Extensions;
+using KosHome.Api.Extensions.Common;
 using KosHome.Api.Extensions.Controller;
+using KosHome.Api.Models;
 using KosHome.Api.Models.Apartments.Requests;
+using KosHome.Api.Models.Common;
+using KosHome.Application.Apartments.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using KosHome.Application.Apartments.CreateApartment;
+using KosHome.Application.Apartments.GetApartments;
+using KosHome.Domain.Common;
 using Microsoft.AspNetCore.Http;
 
 namespace KosHome.Api.Controllers;
