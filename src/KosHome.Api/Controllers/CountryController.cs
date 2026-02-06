@@ -36,6 +36,7 @@ public class CountryController : ControllerBase
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An <see cref="IActionResult"/> containing the list of countries or an error.</returns>
     [HttpGet]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<CountryResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -53,6 +54,7 @@ public class CountryController : ControllerBase
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An <see cref="IActionResult"/> containing the country or an error.</returns>
     [HttpGet("{countryId}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(CountryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]

@@ -3,14 +3,11 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using Asp.Versioning;
-using KosHome.Api.Extensions;
 using KosHome.Api.Models;
 using KosHome.Api.Models.Common;
-using KosHome.Domain.Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using KosHome.Application.Cities.GetCities;
 using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
 using KosHome.Api.Extensions.Controller;
 using KosHome.Api.Extensions.Common;
 using KosHome.Application.Cities.Create;
@@ -64,6 +61,7 @@ public class CityController : ControllerBase
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An <see cref="IActionResult"/> containing the city or an error.</returns>
     [HttpGet("{cityId}")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(CityResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]

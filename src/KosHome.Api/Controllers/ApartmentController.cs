@@ -13,7 +13,9 @@ using KosHome.Application.Apartments.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using KosHome.Application.Apartments.CreateApartment;
+using KosHome.Application.Apartments.GetApartment;
 using KosHome.Application.Apartments.GetApartments;
+using KosHome.Application.Mappers;
 using KosHome.Domain.Common;
 using Microsoft.AspNetCore.Http;
 
@@ -55,6 +57,24 @@ public class ApartmentController : ControllerBase
 
         var result = await _mediator.Send(query, cancellationToken);
         return this.ToPaginatedActionResult(result);
+    }
+
+    /// <summary>
+    /// Gets an apartment by its unique identifier.
+    /// </summary>
+    /// <param name="apartmentId">The apartment identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The apartment details.</returns>
+    [HttpGet("{apartmentId}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(ApiResponse<ApartmentResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApartmentById([FromRoute] Ulid apartmentId, CancellationToken cancellationToken = default)
+    {
+        var query = new GetApartmentQuery { Id = apartmentId };
+        var result = await _mediator.Send(query, cancellationToken);
+        return this.ToActionResult(result.Map(apartment => apartment.ToResponse()));
     }
 
     [HttpPost]
