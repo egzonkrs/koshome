@@ -1,0 +1,765 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 60 14% 92%; /* Changed from 0 0% 100% to match #eeefe9 */
+    --foreground: 222.2 84% 4.9%;
+    --card: 60 14% 92%; /* Changed to match #eeefe9 */
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 60 14% 92%; /* Changed to match #eeefe9 */
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 60 33% 96%; /* Changed to be closer to #fffffd */
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 60 33% 96%; /* Changed to be closer to #fffffd */
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 60 33% 96%; /* Changed to be closer to #fffffd */
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 142 76% 36%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 142 70% 50%;
+    --primary-foreground: 144.9 80.4% 10%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 142 70% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+.leaflet-control-container {
+  z-index: 20;
+}
+
+.leaflet-popup {
+  z-index: 20;
+}
+
+/* Fix for high-DPI displays */
+.leaflet-retina .leaflet-tile,
+.leaflet-retina .leaflet-marker-icon,
+.leaflet-retina .leaflet-marker-shadow {
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+/* Ensure zoom controls are visible and working */
+.leaflet-control-zoom {
+  display: block !important;
+  z-index: 1000;
+}
+
+.leaflet-control-zoom a {
+  width: 30px !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  font-size: 15px !important;
+  font-weight: bold;
+  color: #333;
+  background-color: white;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.map-cluster-icon {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.map-cluster-icon:hover {
+  transform: scale(1.1) translateY(-5px);
+  z-index: 30 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Improved popup styling to match app aesthetics */
+.apartment-popup .leaflet-popup-content-wrapper {
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.2),
+    0 12px 24px -8px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  font-family: var(--font-poppins), 'Poppins', system-ui, -apple-system, sans-serif;
+}
+
+.apartment-popup .leaflet-popup-content {
+  margin: 0;
+  width: 280px !important;
+  color: hsl(var(--card-foreground));
+  font-family: var(--font-poppins), 'Poppins', system-ui, -apple-system, sans-serif;
+}
+
+.apartment-popup .leaflet-popup-content * {
+  font-family: inherit;
+}
+
+.apartment-popup .leaflet-popup-close-button {
+  color: white;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.apartment-popup .leaflet-popup-close-button:hover {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  transform: scale(1.1);
+}
+
+.apartment-popup .leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+
+.apartment-popup .leaflet-popup-tip {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+/* Improved tooltip styling to match app aesthetics */
+.leaflet-tooltip {
+  border-radius: 20px !important;
+  box-shadow: 
+    0 15px 30px -8px rgba(0, 0, 0, 0.2),
+    0 8px 16px -4px rgba(0, 0, 0, 0.1) !important;
+  padding: 12px 18px !important;
+  font-family: var(--font-poppins), 'Poppins', system-ui, -apple-system, sans-serif !important;
+  background: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+.leaflet-tooltip::before {
+  border-top-color: hsl(var(--card)) !important;
+}
+
+/* Ensure select dropdowns appear above map */
+.select-content {
+  z-index: 50 !important;
+}
+
+/* Glass effect for modals */
+.backdrop-blur-xl {
+  backdrop-filter: blur(16px);
+}
+
+/* Form styles */
+.form-container {
+  @apply bg-white dark:bg-background;
+}
+
+/* Prevent form field movement */
+.form-field {
+  @apply min-h-[80px];
+}
+
+/* Custom scrollbar for the panel */
+.floating-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.floating-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.floating-panel::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 20px;
+}
+
+/* Animation for panel transitions */
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-bottom {
+  animation: slideInFromBottom 0.3s ease-out forwards;
+}
+
+.slide-in-left {
+  animation: slideInFromLeft 0.3s ease-out forwards;
+}
+
+/* Listing hover effect */
+.listing-hover-effect {
+  transition: all 0.2s ease-in-out;
+}
+
+.listing-hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom color overrides */
+.bg-white {
+  background-color: #eeefe9 !important;
+}
+
+.text-white {
+  color: #eeefe9 !important;
+}
+
+.bg-gray-100,
+.bg-gray-50 {
+  background-color: #f3f4f6 !important;
+}
+
+/* Custom tab styling with darker background */
+.tabs-darker .TabsList {
+  background-color: #e5e6e1;
+}
+
+.tabs-darker .TabsTrigger[data-state="inactive"] {
+  background-color: #e5e6e1;
+}
+
+.tabs-darker .TabsTrigger[data-state="active"] {
+  background-color: #eeefe9;
+}
+
+/* Update other darker areas */
+.bg-muted,
+.bg-secondary {
+  background-color: #e5e6e1 !important;
+}
+
+.dark .bg-muted,
+.dark .bg-secondary {
+  /* Keep dark mode as is */
+  background-color: hsl(var(--muted)) !important;
+}
+
+/* Fix for range slider to show both thumbs */
+.range-slider [data-orientation="horizontal"] {
+  height: 20px;
+}
+
+/* Force both thumbs to be visible */
+.range-slider [role="slider"] {
+  display: block !important;
+  height: 20px !important;
+  width: 20px !important;
+  border-radius: 9999px !important;
+  border: 2px solid hsl(var(--primary)) !important;
+  background-color: hsl(var(--background)) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure the end thumb is visible */
+.range-slider [role="slider"][aria-label="Maximum"] {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Add specific styling for the container spans */
+.range-slider span[style*="transform"] {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure the track is visible */
+.range-slider [data-orientation="horizontal"] {
+  height: 4px;
+  background-color: hsl(var(--border));
+  position: relative;
+  border-radius: 9999px;
+}
+
+/* Style the range portion of the track */
+.range-slider [data-orientation="horizontal"] [data-orientation="horizontal"] {
+  height: 100%;
+  background-color: hsl(var(--primary));
+  position: absolute;
+  border-radius: 9999px;
+}
+
+/* Fix for sticky filter panel */
+@media (max-width: 1023px) {
+  .lg\:sticky {
+    position: relative !important;
+  }
+}
+
+/* Fix for apartment images */
+.apartment-card-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Make sure images don't overflow */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Image zoom styles */
+.cursor-zoom-in {
+  cursor: zoom-in;
+}
+
+.cursor-zoom-out {
+  cursor: zoom-out;
+}
+
+/* Thumbnail hover effects */
+.thumbnail-hover {
+  transition: all 0.2s ease;
+}
+
+.thumbnail-hover:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Feature tags styling */
+.feature-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: hsl(var(--muted));
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.feature-tag:hover {
+  background-color: hsl(var(--muted) / 80%);
+}
+
+/* Image zoom modal styles */
+.zoom-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.zoom-modal-content {
+  max-height: 90vh;
+  max-width: 90vw;
+}
+
+.zoom-thumbnail {
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.zoom-thumbnail:hover {
+  opacity: 1;
+}
+
+.zoom-thumbnail.active {
+  opacity: 1;
+  border-color: hsl(var(--primary));
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* AI Insights panel styling */
+.ai-insights-panel {
+  backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.9));
+}
+
+/* Pulsing animation for AI loading */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px hsl(var(--primary) / 0);
+  }
+}
+
+.ai-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Typing animation for AI responses */
+@keyframes typing-dots {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.typing-dot {
+  animation: typing-dots 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* ========================================
+   LEAFLET MAP CONTROLS STYLING
+   Matches app's glassmorphism design
+   ======================================== */
+
+/* General control container styling */
+.leaflet-control-container {
+  font-family: var(--font-poppins), 'Poppins', sans-serif !important;
+}
+
+/* Zoom controls */
+.leaflet-control-zoom {
+  border: none !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.12), 0 2px 8px -2px rgba(0, 0, 0, 0.08) !important;
+  background: hsl(var(--card) / 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  margin-right: 12px !important;
+  margin-top: 12px !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: transparent !important;
+  color: hsl(var(--foreground)) !important;
+  border: none !important;
+  width: 38px !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: hsl(var(--muted)) !important;
+  color: hsl(var(--primary)) !important;
+}
+
+.leaflet-control-zoom a:first-child {
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-radius: 0 0 12px 12px !important;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  text-indent: 0 !important;
+}
+
+/* Layers control (map type switcher) */
+.leaflet-control-layers {
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.12), 0 2px 8px -2px rgba(0, 0, 0, 0.08) !important;
+  background: hsl(var(--card) / 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  margin-right: 12px !important;
+  overflow: hidden !important;
+}
+
+.leaflet-control-layers-toggle {
+  width: 38px !important;
+  height: 38px !important;
+  background-size: 20px 20px !important;
+  background-position: center !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-control-layers-toggle:hover {
+  background-color: hsl(var(--muted)) !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 8px 12px !important;
+  background: hsl(var(--card) / 0.98) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.leaflet-control-layers-base label,
+.leaflet-control-layers-overlays label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 6px 4px !important;
+  margin: 0 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+  font-size: 13px !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.leaflet-control-layers-base label:hover,
+.leaflet-control-layers-overlays label:hover {
+  background-color: hsl(var(--muted)) !important;
+}
+
+.leaflet-control-layers-separator {
+  border-top: 1px solid hsl(var(--border)) !important;
+  margin: 6px 0 !important;
+}
+
+/* Attribution control */
+.leaflet-control-attribution {
+  background: hsl(var(--card) / 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  border-radius: 8px 0 0 0 !important;
+  padding: 4px 10px !important;
+  font-size: 10px !important;
+  color: hsl(var(--muted-foreground)) !important;
+  margin: 0 !important;
+}
+
+.leaflet-control-attribution a {
+  color: hsl(var(--primary)) !important;
+  text-decoration: none !important;
+}
+
+.leaflet-control-attribution a:hover {
+  text-decoration: underline !important;
+}
+
+/* Scale control */
+.leaflet-control-scale-line {
+  background: hsl(var(--card) / 0.9) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 4px !important;
+  padding: 2px 6px !important;
+  color: hsl(var(--foreground)) !important;
+  font-size: 10px !important;
+}
+
+/* Right-side controls container positioning */
+.leaflet-right .leaflet-control {
+  margin-right: 12px !important;
+}
+
+.leaflet-top .leaflet-control {
+  margin-top: 12px !important;
+}
+
+/* Custom layers button icon (replacing default with nicer icon) */
+.leaflet-control-layers-toggle {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='12 2 2 7 12 12 22 7 12 2'%3E%3C/polygon%3E%3Cpolyline points='2 17 12 22 22 17'%3E%3C/polyline%3E%3Cpolyline points='2 12 12 17 22 12'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+/* Leaflet Draw Controls Styling */
+.leaflet-draw {
+  position: absolute !important;
+  top: 120px !important;
+  right: 10px !important;
+}
+
+.leaflet-draw-toolbar a {
+  background-color: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 8px !important;
+  margin: 4px !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-draw-toolbar a:hover {
+  background-color: hsl(var(--muted)) !important;
+  transform: scale(1.05);
+}
+
+.leaflet-draw-section {
+  background: hsl(var(--card) / 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+  border-radius: 12px !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+  padding: 4px !important;
+}
+
+.leaflet-draw-actions {
+  background: hsl(var(--card)) !important;
+  border-radius: 8px !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  left: auto !important;
+  right: 48px !important;
+  padding: 6px !important;
+}
+
+.leaflet-draw-actions li a {
+  background: transparent !important;
+  border: none !important;
+  color: hsl(var(--foreground)) !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-family: var(--font-poppins), 'Poppins', sans-serif !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+.leaflet-draw-actions li a:hover {
+  background: hsl(var(--muted)) !important;
+}
+
+/* Draw mode active indicator */
+.leaflet-draw-toolbar-top {
+  margin-top: 0 !important;
+}
+
+/* Polygon and Rectangle styling when drawing */
+.leaflet-draw-guide-dash {
+  stroke: hsl(var(--primary)) !important;
+}
+
+.leaflet-interactive.leaflet-mouse-marker {
+  cursor: crosshair !important;
+}
+
+/* Mobile adjustments for Leaflet Controls */
+@media (max-width: 768px) {
+  /* Move zoom controls to left side on mobile */
+  .leaflet-control-zoom {
+    margin-left: 12px !important;
+    margin-right: 0 !important;
+  }
+  
+  .leaflet-control-zoom a {
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+  }
+  
+  /* Layers control on mobile */
+  .leaflet-control-layers {
+    margin-left: 12px !important;
+    margin-right: 0 !important;
+  }
+  
+  .leaflet-control-layers-toggle {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  /* Draw controls on mobile */
+  .leaflet-draw {
+    top: auto !important;
+    bottom: 240px !important;
+    right: 10px !important;
+  }
+  
+  .leaflet-draw-toolbar a {
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+  }
+  
+  .leaflet-draw-actions {
+    right: 52px !important;
+  }
+  
+  /* Move left controls to avoid overlap with panel toggle */
+  .leaflet-left .leaflet-control {
+    margin-left: 12px !important;
+  }
+}
